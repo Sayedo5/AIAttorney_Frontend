@@ -16,7 +16,8 @@ import {
   Mail,
   Phone,
   ArrowLeft,
-  Check
+  Check,
+  Smartphone
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useHaptics } from "@/hooks/useHaptics";
+import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useToast } from "@/hooks/use-toast";
 
 interface SettingsScreenProps {
   onBack: () => void;
@@ -41,6 +45,9 @@ interface SettingsScreenProps {
 
 export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScreenProps) => {
   const { theme, setTheme } = useTheme();
+  const { impact, notification } = useHaptics();
+  const { register, isRegistered, permissionStatus } = usePushNotifications();
+  const { toast } = useToast();
   const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
     push: true,
@@ -49,8 +56,43 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
     newsletter: false,
   });
 
-  const toggleDarkMode = (checked: boolean) => {
-    setTheme(checked ? "dark" : "light");
+  const handleThemeChange = async (newTheme: string) => {
+    await impact('light');
+    setTheme(newTheme);
+  };
+
+  const handleToggle = async (key: keyof typeof notifications, checked: boolean) => {
+    await impact('light');
+    setNotifications({ ...notifications, [key]: checked });
+  };
+
+  const handleRegisterPushNotifications = async () => {
+    await impact('medium');
+    const success = await register();
+    if (success) {
+      await notification('success');
+      toast({
+        title: "Push Notifications Enabled",
+        description: "You'll now receive notifications on this device.",
+      });
+    } else {
+      await notification('error');
+      toast({
+        title: "Permission Denied",
+        description: "Please enable notifications in your device settings.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleBackWithHaptic = async () => {
+    await impact('light');
+    onBack();
+  };
+
+  const handleEditProfileWithHaptic = async () => {
+    await impact('light');
+    onEditProfile();
   };
 
   const SettingItem = ({ 
@@ -115,7 +157,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
         <div className="flex items-center gap-4 px-4 py-4">
           <motion.button
             whileTap={{ scale: 0.9 }}
-            onClick={onBack}
+            onClick={handleBackWithHaptic}
             className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center"
           >
             <ArrowLeft className="w-5 h-5 text-foreground" />
@@ -145,7 +187,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
                 variant="outline" 
                 size="sm" 
                 className="border-primary/30 text-primary"
-                onClick={onEditProfile}
+                onClick={handleEditProfileWithHaptic}
               >
                 Edit
               </Button>
@@ -184,7 +226,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
                 <motion.button
                   key={value}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setTheme(value)}
+                  onClick={() => handleThemeChange(value)}
                   className={`relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all ${
                     theme === value
                       ? "bg-primary/10 border-2 border-primary"
@@ -222,29 +264,49 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
         >
           <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">Notifications</h3>
           <Card className="divide-y divide-border/50">
+            {/* Native Push Registration Button */}
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              onClick={handleRegisterPushNotifications}
+              className="w-full flex items-center justify-between p-4 rounded-xl transition-colors hover:bg-muted/50"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10">
+                  <Smartphone className="w-5 h-5 text-primary" />
+                </div>
+                <div className="text-left">
+                  <span className="font-medium text-foreground block">Device Notifications</span>
+                  <span className="text-xs text-muted-foreground">
+                    {isRegistered ? "Registered ✓" : permissionStatus === 'denied' ? "Permission denied" : "Tap to enable"}
+                  </span>
+                </div>
+              </div>
+              <div className={`w-3 h-3 rounded-full ${isRegistered ? 'bg-green-500' : 'bg-muted-foreground/30'}`} />
+            </motion.button>
+            
             <SettingItem 
               icon={Bell} 
               label="Push Notifications" 
               toggle={notifications.push}
-              onToggle={(checked) => setNotifications({ ...notifications, push: checked })}
+              onToggle={(checked) => handleToggle('push', checked)}
             />
             <SettingItem 
               icon={Mail} 
               label="Email Notifications" 
               toggle={notifications.email}
-              onToggle={(checked) => setNotifications({ ...notifications, email: checked })}
+              onToggle={(checked) => handleToggle('email', checked)}
             />
             <SettingItem 
               icon={FileText} 
               label="Case Updates" 
               toggle={notifications.caseUpdates}
-              onToggle={(checked) => setNotifications({ ...notifications, caseUpdates: checked })}
+              onToggle={(checked) => handleToggle('caseUpdates', checked)}
             />
             <SettingItem 
               icon={Star} 
               label="Newsletter" 
               toggle={notifications.newsletter}
-              onToggle={(checked) => setNotifications({ ...notifications, newsletter: checked })}
+              onToggle={(checked) => handleToggle('newsletter', checked)}
             />
           </Card>
         </motion.div>
