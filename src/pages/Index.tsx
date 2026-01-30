@@ -10,12 +10,13 @@ import { LibraryScreen } from "@/screens/LibraryScreen";
 import { DocumentsScreen } from "@/screens/DocumentsScreen";
 import { CasesScreen } from "@/screens/CasesScreen";
 import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
+import { SettingsScreen } from "@/screens/SettingsScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings";
 
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
@@ -50,6 +51,20 @@ const Index = () => {
 
   const handleBackFromHistory = () => {
     setShowHistory(false);
+  };
+
+  const handleSettingsClick = () => {
+    setActiveTab("settings");
+  };
+
+  const handleBackFromSettings = () => {
+    setActiveTab("home");
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    setAuthScreen("login");
+    setActiveTab("home");
   };
 
   // Auth screens
@@ -119,7 +134,10 @@ const Index = () => {
             className="min-h-screen"
           >
             {activeTab === "home" && (
-              <HomeScreen onNavigate={handleNavigate} userName="Advocate" />
+              <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
+            )}
+            {activeTab === "settings" && (
+              <SettingsScreen onBack={handleBackFromSettings} onLogout={handleLogout} />
             )}
             {activeTab === "chat" && (
               <ChatScreen onHistoryClick={handleHistoryClick} />

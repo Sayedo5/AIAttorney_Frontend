@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, MoreVertical, Bell } from "lucide-react";
+import { ArrowLeft, MoreVertical, Bell, Settings } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
 
 interface HeaderProps {
@@ -8,6 +8,7 @@ interface HeaderProps {
   onBack?: () => void;
   rightAction?: React.ReactNode;
   transparent?: boolean;
+  onSettingsClick?: () => void;
 }
 
 export function Header({ 
@@ -15,7 +16,8 @@ export function Header({
   showBack = false, 
   onBack, 
   rightAction,
-  transparent = false 
+  transparent = false,
+  onSettingsClick
 }: HeaderProps) {
   return (
     <motion.header
@@ -50,7 +52,8 @@ export function Header({
             <IconButton
               variant="ghost"
               size="sm"
-              icon={<MoreVertical className="w-5 h-5" />}
+              icon={<Settings className="w-5 h-5" />}
+              onClick={onSettingsClick}
             />
           </>
         )}
