@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Screens
@@ -12,12 +12,15 @@ import { CasesScreen } from "@/screens/CasesScreen";
 import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { ProfileEditScreen } from "@/screens/ProfileEditScreen";
+import { OnboardingScreen } from "@/screens/OnboardingScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup";
 type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit";
+
+const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
@@ -26,10 +29,18 @@ const pageVariants = {
 };
 
 const Index = () => {
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
+    return localStorage.getItem(ONBOARDING_KEY) === "true";
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem(ONBOARDING_KEY, "true");
+    setHasCompletedOnboarding(true);
+  };
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -75,6 +86,15 @@ const Index = () => {
     setAuthScreen("login");
     setActiveTab("home");
   };
+
+  // Onboarding screen
+  if (!hasCompletedOnboarding) {
+    return (
+      <div className="app-container">
+        <OnboardingScreen onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
 
   // Auth screens
   if (!isAuthenticated) {
