@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
 import { 
   User, 
   Bell, 
@@ -36,7 +37,8 @@ interface SettingsScreenProps {
 }
 
 export const SettingsScreen = ({ onBack, onLogout }: SettingsScreenProps) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
     push: true,
     email: false,
@@ -44,9 +46,8 @@ export const SettingsScreen = ({ onBack, onLogout }: SettingsScreenProps) => {
     newsletter: false,
   });
 
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    // In a real app, this would toggle the theme
+  const toggleDarkMode = (checked: boolean) => {
+    setTheme(checked ? "dark" : "light");
   };
 
   const SettingItem = ({ 
