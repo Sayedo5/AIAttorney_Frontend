@@ -9,7 +9,8 @@ import {
   MapPin, 
   Briefcase,
   Save,
-  X
+  X,
+  ImageIcon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -17,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { useCamera } from "@/hooks/useCamera";
+import { useHaptics } from "@/hooks/useHaptics";
 
 interface ProfileData {
   name: string;
@@ -36,7 +39,10 @@ interface ProfileEditScreenProps {
 
 export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditScreenProps) => {
   const { toast } = useToast();
+  const { takePhoto } = useCamera();
+  const { impact, notification } = useHaptics();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showPhotoOptions, setShowPhotoOptions] = useState(false);
   
   const [profile, setProfile] = useState<ProfileData>({
     name: initialData?.name || "Advocate User",
@@ -50,7 +56,33 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAvatarClick = () => {
+  const handleAvatarClick = async () => {
+    await impact('light');
+    setShowPhotoOptions(true);
+  };
+
+  const handleTakePhoto = async () => {
+    setShowPhotoOptions(false);
+    await impact('medium');
+    const photo = await takePhoto({ source: 'camera', quality: 90 });
+    if (photo) {
+      setProfile(prev => ({ ...prev, avatar: photo }));
+      await notification('success');
+    }
+  };
+
+  const handleChooseFromGallery = async () => {
+    setShowPhotoOptions(false);
+    await impact('medium');
+    const photo = await takePhoto({ source: 'photos', quality: 90 });
+    if (photo) {
+      setProfile(prev => ({ ...prev, avatar: photo }));
+      await notification('success');
+    }
+  };
+
+  const handleFileInput = () => {
+    setShowPhotoOptions(false);
     fileInputRef.current?.click();
   };
 
@@ -74,7 +106,8 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
     }
   };
 
-  const handleRemoveAvatar = () => {
+  const handleRemoveAvatar = async () => {
+    await impact('medium');
     setProfile(prev => ({ ...prev, avatar: null }));
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -87,6 +120,7 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    await impact('medium');
     setIsSubmitting(true);
 
     // Simulate API call
@@ -94,12 +128,18 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
 
     onSave?.(profile);
     
+    await notification('success');
     toast({
       title: "Profile updated",
       description: "Your profile has been saved successfully.",
     });
 
     setIsSubmitting(false);
+    onBack();
+  };
+
+  const handleBackWithHaptic = async () => {
+    await impact('light');
     onBack();
   };
 
@@ -134,13 +174,70 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* Photo Options Modal */}
+      {showPhotoOptions && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50"
+          onClick={() => setShowPhotoOptions(false)}
+        >
+          <motion.div
+            initial={{ y: 300 }}
+            animate={{ y: 0 }}
+            exit={{ y: 300 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-background rounded-t-3xl p-6 space-y-3"
+          >
+            <div className="w-12 h-1 bg-muted-foreground/30 rounded-full mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-center text-foreground mb-4">Change Profile Photo</h3>
+            
+            <Button
+              variant="outline"
+              className="w-full h-14 justify-start gap-4 rounded-xl"
+              onClick={handleTakePhoto}
+            >
+              <Camera className="w-5 h-5 text-primary" />
+              Take Photo
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full h-14 justify-start gap-4 rounded-xl"
+              onClick={handleChooseFromGallery}
+            >
+              <ImageIcon className="w-5 h-5 text-primary" />
+              Choose from Gallery
+            </Button>
+            
+            <Button
+              variant="outline"
+              className="w-full h-14 justify-start gap-4 rounded-xl"
+              onClick={handleFileInput}
+            >
+              <ImageIcon className="w-5 h-5 text-primary" />
+              Upload from Device
+            </Button>
+            
+            <Button
+              variant="ghost"
+              className="w-full h-14 rounded-xl text-muted-foreground"
+              onClick={() => setShowPhotoOptions(false)}
+            >
+              Cancel
+            </Button>
+          </motion.div>
+        </motion.div>
+      )}
+
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="flex items-center justify-between px-4 py-4">
           <div className="flex items-center gap-4">
             <motion.button
               whileTap={{ scale: 0.9 }}
-              onClick={onBack}
+              onClick={handleBackWithHaptic}
               className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center"
             >
               <ArrowLeft className="w-5 h-5 text-foreground" />
