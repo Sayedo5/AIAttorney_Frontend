@@ -6,6 +6,7 @@ import {
   Bell, 
   Moon, 
   Sun, 
+  Monitor,
   LogOut, 
   ChevronRight, 
   Shield, 
@@ -14,7 +15,8 @@ import {
   Star,
   Mail,
   Phone,
-  ArrowLeft
+  ArrowLeft,
+  Check
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -166,13 +168,43 @@ export const SettingsScreen = ({ onBack, onLogout }: SettingsScreenProps) => {
           transition={{ delay: 0.2 }}
         >
           <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">Appearance</h3>
-          <Card>
-            <SettingItem 
-              icon={isDarkMode ? Moon : Sun} 
-              label="Dark Mode" 
-              toggle={isDarkMode}
-              onToggle={toggleDarkMode}
-            />
+          <Card className="p-2">
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { value: "light", icon: Sun, label: "Light" },
+                { value: "dark", icon: Moon, label: "Dark" },
+                { value: "system", icon: Monitor, label: "System" },
+              ].map(({ value, icon: Icon, label }) => (
+                <motion.button
+                  key={value}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setTheme(value)}
+                  className={`relative flex flex-col items-center gap-2 p-4 rounded-xl transition-all ${
+                    theme === value
+                      ? "bg-primary/10 border-2 border-primary"
+                      : "bg-muted/30 border-2 border-transparent hover:bg-muted/50"
+                  }`}
+                >
+                  {theme === value && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute top-2 right-2"
+                    >
+                      <Check className="w-4 h-4 text-primary" />
+                    </motion.div>
+                  )}
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    theme === value ? "bg-primary/20" : "bg-muted/50"
+                  }`}>
+                    <Icon className={`w-5 h-5 ${theme === value ? "text-primary" : "text-muted-foreground"}`} />
+                  </div>
+                  <span className={`text-sm font-medium ${theme === value ? "text-primary" : "text-muted-foreground"}`}>
+                    {label}
+                  </span>
+                </motion.button>
+              ))}
+            </div>
           </Card>
         </motion.div>
 
