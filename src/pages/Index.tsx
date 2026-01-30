@@ -11,12 +11,13 @@ import { DocumentsScreen } from "@/screens/DocumentsScreen";
 import { CasesScreen } from "@/screens/CasesScreen";
 import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
+import { ProfileEditScreen } from "@/screens/ProfileEditScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit";
 
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
@@ -59,6 +60,14 @@ const Index = () => {
 
   const handleBackFromSettings = () => {
     setActiveTab("home");
+  };
+
+  const handleProfileEditClick = () => {
+    setActiveTab("profile-edit");
+  };
+
+  const handleBackFromProfileEdit = () => {
+    setActiveTab("settings");
   };
 
   const handleLogout = () => {
@@ -137,7 +146,10 @@ const Index = () => {
               <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
             )}
             {activeTab === "settings" && (
-              <SettingsScreen onBack={handleBackFromSettings} onLogout={handleLogout} />
+              <SettingsScreen onBack={handleBackFromSettings} onLogout={handleLogout} onEditProfile={handleProfileEditClick} />
+            )}
+            {activeTab === "profile-edit" && (
+              <ProfileEditScreen onBack={handleBackFromProfileEdit} />
             )}
             {activeTab === "chat" && (
               <ChatScreen onHistoryClick={handleHistoryClick} />
