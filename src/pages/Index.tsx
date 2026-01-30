@@ -1,12 +1,138 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Screens
+import { LoginScreen } from "@/screens/LoginScreen";
+import { SignupScreen } from "@/screens/SignupScreen";
+import { HomeScreen } from "@/screens/HomeScreen";
+import { ChatScreen } from "@/screens/ChatScreen";
+import { LibraryScreen } from "@/screens/LibraryScreen";
+import { DocumentsScreen } from "@/screens/DocumentsScreen";
+import { CasesScreen } from "@/screens/CasesScreen";
+import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
+
+// Navigation
+import { BottomNav } from "@/components/navigation/BottomNav";
+
+type AuthScreen = "login" | "signup";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history";
+
+const pageVariants = {
+  initial: { opacity: 0, x: 20 },
+  animate: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: -20 },
+};
 
 const Index = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
+  const [activeTab, setActiveTab] = useState<AppScreen>("home");
+  const [showHistory, setShowHistory] = useState(false);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    setActiveTab("home");
+  };
+
+  const handleSignup = () => {
+    setIsAuthenticated(true);
+    setActiveTab("home");
+  };
+
+  const handleNavigate = (tab: string) => {
+    setActiveTab(tab as AppScreen);
+    setShowHistory(false);
+  };
+
+  const handleHistoryClick = () => {
+    setShowHistory(true);
+  };
+
+  const handleBackFromHistory = () => {
+    setShowHistory(false);
+  };
+
+  // Auth screens
+  if (!isAuthenticated) {
+    return (
+      <div className="app-container">
+        <AnimatePresence mode="wait">
+          {authScreen === "login" ? (
+            <motion.div
+              key="login"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <LoginScreen
+                onLogin={handleLogin}
+                onSignupClick={() => setAuthScreen("signup")}
+              />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="signup"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <SignupScreen
+                onSignup={handleSignup}
+                onLoginClick={() => setAuthScreen("login")}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+    );
+  }
+
+  // Main app with bottom navigation
+  return (
+    <div className="app-container">
+      <AnimatePresence mode="wait">
+        {showHistory ? (
+          <motion.div
+            key="history"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.2 }}
+          >
+            <ChatHistoryScreen
+              onBack={handleBackFromHistory}
+              onSelectChat={(id) => {
+                setShowHistory(false);
+                setActiveTab("chat");
+              }}
+            />
+          </motion.div>
+        ) : (
+          <motion.div
+            key={activeTab}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.2 }}
+            className="min-h-screen"
+          >
+            {activeTab === "home" && (
+              <HomeScreen onNavigate={handleNavigate} userName="Advocate" />
+            )}
+            {activeTab === "chat" && (
+              <ChatScreen onHistoryClick={handleHistoryClick} />
+            )}
+            {activeTab === "library" && <LibraryScreen />}
+            {activeTab === "documents" && <DocumentsScreen />}
+            {activeTab === "cases" && <CasesScreen />}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Bottom Navigation */}
+      <BottomNav activeTab={activeTab} onTabChange={handleNavigate} />
     </div>
   );
 };
