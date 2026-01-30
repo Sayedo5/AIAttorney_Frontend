@@ -8,7 +8,8 @@ import {
   Search,
   Sparkles,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Settings
 } from "lucide-react";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { Header } from "@/components/navigation/Header";
@@ -16,6 +17,7 @@ import { Header } from "@/components/navigation/Header";
 interface HomeScreenProps {
   onNavigate: (tab: string) => void;
   userName?: string;
+  onSettingsClick?: () => void;
 }
 
 const quickActions = [
@@ -32,13 +34,13 @@ const suggestions = [
   "Explain Section 420 PPC",
 ];
 
-export function HomeScreen({ onNavigate, userName = "Advocate" }: HomeScreenProps) {
+export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick }: HomeScreenProps) {
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Header transparent />
+      <Header transparent onSettingsClick={onSettingsClick} />
       
       {/* Hero Section */}
       <motion.div
