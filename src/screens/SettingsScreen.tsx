@@ -36,9 +36,10 @@ import {
 interface SettingsScreenProps {
   onBack: () => void;
   onLogout: () => void;
+  onEditProfile: () => void;
 }
 
-export const SettingsScreen = ({ onBack, onLogout }: SettingsScreenProps) => {
+export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScreenProps) => {
   const { theme, setTheme } = useTheme();
   const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
@@ -140,7 +141,12 @@ export const SettingsScreen = ({ onBack, onLogout }: SettingsScreenProps) => {
                 <p className="text-sm text-muted-foreground">advocate@aiattorney.com</p>
                 <p className="text-xs text-primary mt-1">Premium Plan</p>
               </div>
-              <Button variant="outline" size="sm" className="border-primary/30 text-primary">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-primary/30 text-primary"
+                onClick={onEditProfile}
+              >
                 Edit
               </Button>
             </div>
