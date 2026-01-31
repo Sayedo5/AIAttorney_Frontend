@@ -39,12 +39,12 @@ export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick }: L
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Left Side - Branding */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="hidden md:flex flex-1 bg-gradient-to-br from-primary to-primary-glow flex-col items-center justify-center p-12"
+        className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-glow flex-col items-center justify-center p-12"
       >
         <motion.div
           animate={{ y: [0, -10, 0] }}
@@ -72,7 +72,7 @@ export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick }: L
       </motion.div>
 
       {/* Right Side - Form */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+      <div className="flex-1 lg:w-1/2 flex flex-col items-center justify-center px-6 py-12 overflow-y-auto">
         {/* Mobile Logo */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
