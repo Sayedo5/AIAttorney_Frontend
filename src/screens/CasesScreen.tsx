@@ -9,11 +9,11 @@ import {
   ChevronRight,
   AlertCircle,
   CheckCircle2,
-  Filter,
   Bell
 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
+import { PremiumSubscriptionModal } from "@/components/modals/PremiumSubscriptionModal";
 
 interface CasesScreenProps {}
 
@@ -85,6 +85,8 @@ const upcomingHearings = [
 
 export function CasesScreen({}: CasesScreenProps) {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
 
   const filteredCases = cases.filter((c) => {
     if (activeFilter === "all") return true;
@@ -113,6 +115,16 @@ export function CasesScreen({}: CasesScreenProps) {
       default:
         return <CheckCircle2 className="w-4 h-4 text-green-500" />;
     }
+  };
+
+  const handleCaseClick = (caseItem: typeof cases[0]) => {
+    setSelectedCaseTitle(caseItem.title);
+    setShowPremiumModal(true);
+  };
+
+  const handleSubscribe = () => {
+    setShowPremiumModal(false);
+    // Navigate to pricing or payment flow
   };
 
   return (
@@ -211,7 +223,8 @@ export function CasesScreen({}: CasesScreenProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * index }}
-            className="p-4 rounded-2xl bg-card border border-border/50 hover:shadow-md transition-all cursor-pointer"
+            onClick={() => handleCaseClick(caseItem)}
+            className="p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/50 hover:shadow-md transition-all cursor-pointer active:scale-[0.98]"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
@@ -250,6 +263,14 @@ export function CasesScreen({}: CasesScreenProps) {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Premium Subscription Modal */}
+      <PremiumSubscriptionModal
+        isOpen={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
+        onSubscribe={handleSubscribe}
+        featureTitle={selectedCaseTitle}
+      />
     </div>
   );
 }
