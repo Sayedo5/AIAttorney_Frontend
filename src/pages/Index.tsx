@@ -14,12 +14,15 @@ import { SettingsScreen } from "@/screens/SettingsScreen";
 import { ProfileEditScreen } from "@/screens/ProfileEditScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
 import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
+import { PricingScreen } from "@/screens/PricingScreen";
+import { AboutScreen } from "@/screens/AboutScreen";
+import { ContactScreen } from "@/screens/ContactScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 
@@ -79,6 +82,30 @@ const Index = () => {
   };
 
   const handleBackFromProfileEdit = () => {
+    setActiveTab("settings");
+  };
+
+  const handlePricingClick = () => {
+    setActiveTab("pricing");
+  };
+
+  const handleAboutClick = () => {
+    setActiveTab("about");
+  };
+
+  const handleContactClick = () => {
+    setActiveTab("contact");
+  };
+
+  const handleBackFromPricing = () => {
+    setActiveTab("settings");
+  };
+
+  const handleBackFromAbout = () => {
+    setActiveTab("settings");
+  };
+
+  const handleBackFromContact = () => {
     setActiveTab("settings");
   };
 
@@ -181,7 +208,14 @@ const Index = () => {
               <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
             )}
             {activeTab === "settings" && (
-              <SettingsScreen onBack={handleBackFromSettings} onLogout={handleLogout} onEditProfile={handleProfileEditClick} />
+              <SettingsScreen 
+                onBack={handleBackFromSettings} 
+                onLogout={handleLogout} 
+                onEditProfile={handleProfileEditClick}
+                onPricing={handlePricingClick}
+                onAbout={handleAboutClick}
+                onContact={handleContactClick}
+              />
             )}
             {activeTab === "profile-edit" && (
               <ProfileEditScreen onBack={handleBackFromProfileEdit} />
@@ -192,6 +226,9 @@ const Index = () => {
             {activeTab === "library" && <LibraryScreen />}
             {activeTab === "documents" && <DocumentsScreen />}
             {activeTab === "cases" && <CasesScreen />}
+            {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
+            {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
+            {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
           </motion.div>
         )}
       </AnimatePresence>
