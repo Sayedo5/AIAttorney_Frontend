@@ -13,11 +13,12 @@ import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { ProfileEditScreen } from "@/screens/ProfileEditScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
+import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
-type AuthScreen = "login" | "signup";
+type AuthScreen = "login" | "signup" | "forgot-password";
 type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
@@ -101,7 +102,7 @@ const Index = () => {
     return (
       <div className="app-container">
         <AnimatePresence mode="wait">
-          {authScreen === "login" ? (
+          {authScreen === "login" && (
             <motion.div
               key="login"
               initial={{ opacity: 0 }}
@@ -111,9 +112,11 @@ const Index = () => {
               <LoginScreen
                 onLogin={handleLogin}
                 onSignupClick={() => setAuthScreen("signup")}
+                onForgotPasswordClick={() => setAuthScreen("forgot-password")}
               />
             </motion.div>
-          ) : (
+          )}
+          {authScreen === "signup" && (
             <motion.div
               key="signup"
               initial={{ opacity: 0 }}
@@ -123,6 +126,18 @@ const Index = () => {
               <SignupScreen
                 onSignup={handleSignup}
                 onLoginClick={() => setAuthScreen("login")}
+              />
+            </motion.div>
+          )}
+          {authScreen === "forgot-password" && (
+            <motion.div
+              key="forgot-password"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <ForgotPasswordScreen
+                onBack={() => setAuthScreen("login")}
               />
             </motion.div>
           )}
