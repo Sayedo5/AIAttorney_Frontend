@@ -7,9 +7,10 @@ import { IconButton } from "@/components/ui/icon-button";
 interface LoginScreenProps {
   onLogin: () => void;
   onSignupClick: () => void;
+  onForgotPasswordClick: () => void;
 }
 
-export function LoginScreen({ onLogin, onSignupClick }: LoginScreenProps) {
+export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick }: LoginScreenProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,7 +102,10 @@ export function LoginScreen({ onLogin, onSignupClick }: LoginScreenProps) {
 
           {/* Forgot Password */}
           <div className="text-right">
-            <button className="text-sm text-primary hover:text-primary-glow transition-colors">
+            <button 
+              onClick={onForgotPasswordClick}
+              className="text-sm text-primary hover:text-primary-glow transition-colors"
+            >
               Forgot password?
             </button>
           </div>
