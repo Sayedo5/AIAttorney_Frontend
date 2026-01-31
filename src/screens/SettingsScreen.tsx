@@ -17,7 +17,10 @@ import {
   Phone,
   ArrowLeft,
   Check,
-  Smartphone
+  Smartphone,
+  CreditCard,
+  Info,
+  MessageCircle
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -41,9 +44,12 @@ interface SettingsScreenProps {
   onBack: () => void;
   onLogout: () => void;
   onEditProfile: () => void;
+  onPricing: () => void;
+  onAbout: () => void;
+  onContact: () => void;
 }
 
-export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScreenProps) => {
+export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onAbout, onContact }: SettingsScreenProps) => {
   const { theme, setTheme } = useTheme();
   const { impact, notification } = useHaptics();
   const { register, isRegistered, permissionStatus } = usePushNotifications();
@@ -311,13 +317,27 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile }: SettingsScre
           </Card>
         </motion.div>
 
-        {/* Support */}
+        {/* More */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">Support</h3>
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">More</h3>
+          <Card className="divide-y divide-border/50">
+            <SettingItem icon={CreditCard} label="Pricing Plans" onClick={onPricing} />
+            <SettingItem icon={Info} label="About Us" onClick={onAbout} />
+            <SettingItem icon={MessageCircle} label="Contact & Support" onClick={onContact} />
+          </Card>
+        </motion.div>
+
+        {/* Support */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+        >
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">Legal</h3>
           <Card className="divide-y divide-border/50">
             <SettingItem icon={HelpCircle} label="Help Center" />
             <SettingItem icon={FileText} label="Terms of Service" />
