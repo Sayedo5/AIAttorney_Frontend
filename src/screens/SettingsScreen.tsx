@@ -20,7 +20,11 @@ import {
   Smartphone,
   CreditCard,
   Info,
-  MessageCircle
+  MessageCircle,
+  Crown,
+  Zap,
+  Clock,
+  TrendingUp
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -187,7 +191,10 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
               <div className="flex-1">
                 <h2 className="text-lg font-semibold text-foreground">Advocate User</h2>
                 <p className="text-sm text-muted-foreground">advocate@aiattorney.com</p>
-                <p className="text-xs text-primary mt-1">Premium Plan</p>
+                <div className="flex items-center gap-1 mt-1">
+                  <Crown className="w-3 h-3 text-amber-500" />
+                  <span className="text-xs font-medium text-amber-500">Premium Plan</span>
+                </div>
               </div>
               <Button 
                 variant="outline" 
@@ -196,6 +203,98 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
                 onClick={handleEditProfileWithHaptic}
               >
                 Edit
+              </Button>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* Subscription Status */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12 }}
+        >
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">Subscription</h3>
+          <Card className="overflow-hidden">
+            {/* Plan Header */}
+            <div className="p-4 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border-b border-border/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-lg">
+                    <Crown className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground">Premium Plan</h4>
+                    <p className="text-xs text-muted-foreground">Active • Renews Feb 28, 2026</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-bold text-foreground">PKR 2,999</p>
+                  <p className="text-xs text-muted-foreground">/month</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Usage Stats */}
+            <div className="p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-primary" />
+                  <span className="text-sm text-foreground">AI Queries</span>
+                </div>
+                <span className="text-sm font-medium text-foreground">Unlimited</span>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-primary" />
+                    <span className="text-foreground">Documents Drafted</span>
+                  </div>
+                  <span className="font-medium text-foreground">23 / ∞</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    animate={{ width: "35%" }}
+                    transition={{ delay: 0.5, duration: 0.8 }}
+                    className="h-full bg-gradient-to-r from-primary to-primary-glow rounded-full"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-primary" />
+                    <span className="text-foreground">Case Research</span>
+                  </div>
+                  <span className="font-medium text-foreground">156 this month</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2 text-xs text-muted-foreground">
+                <Clock className="w-3 h-3" />
+                <span>Billing cycle resets in 28 days</span>
+              </div>
+            </div>
+
+            {/* Plan Actions */}
+            <div className="p-4 pt-0 flex gap-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1 rounded-xl border-border/50"
+                onClick={onPricing}
+              >
+                Change Plan
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="flex-1 rounded-xl border-border/50"
+              >
+                Billing History
               </Button>
             </div>
           </Card>
