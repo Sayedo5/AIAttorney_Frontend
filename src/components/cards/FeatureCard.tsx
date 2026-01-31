@@ -24,14 +24,17 @@ export function FeatureCard({
   return (
     <motion.button
       onClick={onClick}
-      className={cn("feature-card text-left w-full", className)}
+      className={cn(
+        "text-left w-full p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all",
+        className
+      )}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
       <div className="flex items-start gap-3">
-        <div className={cn("p-2.5 rounded-xl bg-accent", iconColor)}>
+        <div className={cn("p-2.5 rounded-xl bg-primary/10", iconColor)}>
           <Icon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
