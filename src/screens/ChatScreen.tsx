@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, History, Sparkles } from "lucide-react";
+import { Plus, History, Scale } from "lucide-react";
 import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
@@ -22,6 +22,12 @@ const sampleResponses = [
   "According to the precedent set in PLD 2020 SC 456, the Supreme Court held that...",
   "For your query regarding property law in Pakistan, Section 54 of the Transfer of Property Act applies here...",
   "The procedure for filing a civil suit involves several steps. First, you need to file a plaint under Order VII of CPC...",
+];
+
+const quickPrompts = [
+  "Explain the legal implications of starting an e-commerce business",
+  "What regulations do I need to comply with?",
+  "Draft a basic rental agreement",
 ];
 
 export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
@@ -94,39 +100,68 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center h-full text-center px-6"
+            className="flex flex-col items-center justify-center h-full text-center px-4"
           >
+            {/* Welcome Card - AI Lawyer Style */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="w-20 h-20 rounded-3xl bg-gradient-primary flex items-center justify-center shadow-glow mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="w-full max-w-sm bg-primary rounded-3xl p-6 mb-6 shadow-lg"
             >
-              <Sparkles className="w-10 h-10 text-primary-foreground" />
+              {/* Avatar */}
+              <motion.div
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                className="w-24 h-24 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"
+              >
+                <div className="w-20 h-20 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full flex items-center justify-center relative overflow-hidden">
+                  {/* Simplified avatar face */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Scale className="w-10 h-10 text-primary" />
+                  </div>
+                </div>
+              </motion.div>
+
+              <h2 className="text-xl font-display font-bold text-primary-foreground mb-1">
+                Welcome to AI Attorney
+              </h2>
+              <p className="text-primary-foreground/80 text-sm">
+                Powered by Latest AI Technology
+              </p>
             </motion.div>
-            
-            <h2 className="text-xl font-display font-semibold text-foreground mb-2">
-              How can I help you today?
-            </h2>
-            <p className="text-muted-foreground text-sm max-w-xs">
-              Ask me anything about Pakistani law, legal procedures, or document drafting.
-            </p>
+
+            {/* Instructions */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-center mb-6"
+            >
+              <p className="text-muted-foreground text-sm">
+                Start by typing your message below
+              </p>
+              <p className="text-muted-foreground/70 text-xs mt-2 italic">
+                E.g. Explain the legal implications of starting an e-commerce business
+              </p>
+            </motion.div>
 
             {/* Quick Prompts */}
-            <div className="mt-8 w-full space-y-2">
-              {[
-                "Explain inheritance laws in Pakistan",
-                "How to register a company?",
-                "What is the procedure for divorce?",
-              ].map((prompt, index) => (
+            <div className="w-full space-y-2">
+              {quickPrompts.map((prompt, index) => (
                 <motion.button
                   key={index}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
+                  transition={{ delay: 0.3 + 0.1 * index }}
                   onClick={() => handleSend(prompt)}
-                  className="w-full p-3 rounded-xl border border-border/50 bg-card hover:bg-accent/50 transition-colors text-left text-sm"
+                  className="w-full p-4 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-card-elevated transition-all text-left group"
                 >
-                  {prompt}
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                      {prompt}
+                    </span>
+                  </div>
                 </motion.button>
               ))}
             </div>
