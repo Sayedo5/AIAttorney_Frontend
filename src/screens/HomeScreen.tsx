@@ -44,7 +44,7 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-6 pt-2 pb-6"
+        className="px-6 pt-16 pb-6"
       >
         <p className="text-muted-foreground text-sm">{greeting},</p>
         <h1 className="text-2xl font-display font-bold text-foreground">
