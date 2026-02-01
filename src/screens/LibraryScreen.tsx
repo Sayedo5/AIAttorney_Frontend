@@ -18,6 +18,7 @@ interface LibraryScreenProps {
   onLogout?: () => void;
   onBookmarkedCasesClick?: () => void;
   onSupport?: () => void;
+  onNotificationsClick?: () => void;
 }
 
 interface Category {
@@ -96,7 +97,7 @@ const sampleDocuments = [
   },
 ];
 
-export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick, onSupport }: LibraryScreenProps) {
+export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick, onSupport, onNotificationsClick }: LibraryScreenProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["cases", "acts", "codes"]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CategoryItem | null>(null);
@@ -131,7 +132,7 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
   if (selectedItem) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <Header title="Library" onSettingsClick={onSettingsClick} />
+        <Header title="Library" onSettingsClick={onSettingsClick} onNotificationsClick={onNotificationsClick} />
         
         <div className="px-4 py-4">
           {/* Back button */}
@@ -219,7 +220,7 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
   // Main library view with sidebar categories
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Header title="Legal Library" onSettingsClick={onSettingsClick} />
+      <Header title="Legal Library" onSettingsClick={onSettingsClick} onNotificationsClick={onNotificationsClick} />
 
       {/* Search */}
       <motion.div
