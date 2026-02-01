@@ -183,23 +183,26 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
+          <Card className="p-6 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-lg transition-all duration-300">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
-                <User className="w-8 h-8 text-primary" />
-              </div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-xl font-bold text-primary-foreground shadow-lg"
+              >
+                AU
+              </motion.div>
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-foreground">Advocate User</h2>
+                <h2 className="text-lg font-display font-bold text-foreground">Advocate User</h2>
                 <p className="text-sm text-muted-foreground">advocate@aiattorney.com</p>
                 <div className="flex items-center gap-1 mt-1">
                   <Crown className="w-3 h-3 text-amber-500" />
-                  <span className="text-xs font-medium text-amber-500">Premium Plan</span>
+                  <span className="text-xs font-semibold text-amber-500">Premium Plan</span>
                 </div>
               </div>
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="border-primary/30 text-primary"
+                className="border-primary/30 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200"
                 onClick={handleEditProfileWithHaptic}
               >
                 Edit

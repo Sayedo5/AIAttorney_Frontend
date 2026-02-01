@@ -35,10 +35,22 @@ const suggestions = [
 export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick }: HomeScreenProps) {
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
+  
+  // Parse userName into first and last name
+  const nameParts = userName.split(" ");
+  const firstName = nameParts[0] || "User";
+  const lastName = nameParts.slice(1).join(" ") || "";
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Header transparent onSettingsClick={onSettingsClick} />
+      <Header 
+        transparent 
+        onSettingsClick={onSettingsClick}
+        showProfile
+        userName={{ firstName, lastName }}
+        onProfileClick={onSettingsClick}
+        onUpgradePlan={() => onNavigate("pricing")}
+      />
       
       {/* Hero Section */}
       <motion.div

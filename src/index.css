@@ -174,7 +174,12 @@
   
   .btn-primary-gradient:hover {
     box-shadow: var(--shadow-glow);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+  }
+  
+  .btn-primary-gradient:active {
+    transform: translateY(0);
   }
   
   /* Feature Card */
@@ -185,7 +190,8 @@
   
   .feature-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    border-color: hsl(var(--primary) / 0.3);
   }
   
   .feature-card:active {
