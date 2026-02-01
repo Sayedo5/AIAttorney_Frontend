@@ -17,6 +17,7 @@ import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 import { PremiumSubscriptionModal } from "@/components/modals/PremiumSubscriptionModal";
 import { useLocalNotifications } from "@/hooks/useLocalNotifications";
+import { useReminderSettings } from "@/hooks/useReminderSettings";
 import { toast } from "sonner";
 
 interface CasesScreenProps {
@@ -96,6 +97,7 @@ export function CasesScreen({ onSettingsClick, onRemindersClick }: CasesScreenPr
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
 
   const { scheduleMultipleReminders, cancelHearingReminder } = useLocalNotifications();
+  const { isRemindersEnabled } = useReminderSettings();
 
   // Calculate upcoming hearing count for notification badge
   const upcomingCount = cases.filter((c) => c.status === "upcoming").length;
@@ -136,6 +138,13 @@ export function CasesScreen({ onSettingsClick, onRemindersClick }: CasesScreenPr
 
   const handleSetReminder = async (e: React.MouseEvent, caseItem: typeof cases[0]) => {
     e.stopPropagation();
+    
+    if (!isRemindersEnabled) {
+      toast.error("Reminders are disabled", {
+        description: "Enable hearing reminders in Settings to set reminders",
+      });
+      return;
+    }
     
     const success = await scheduleMultipleReminders({
       id: caseItem.id,

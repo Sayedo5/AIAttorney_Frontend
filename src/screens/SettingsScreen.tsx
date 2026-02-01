@@ -24,7 +24,8 @@ import {
   Crown,
   Zap,
   Clock,
-  TrendingUp
+  TrendingUp,
+  BellRing
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useHaptics } from "@/hooks/useHaptics";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
+import { useReminderSettings } from "@/hooks/useReminderSettings";
 import { useToast } from "@/hooks/use-toast";
 
 interface SettingsScreenProps {
@@ -57,6 +59,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
   const { theme, setTheme } = useTheme();
   const { impact, notification } = useHaptics();
   const { register, isRegistered, permissionStatus } = usePushNotifications();
+  const { isRemindersEnabled, setRemindersEnabled } = useReminderSettings();
   const { toast } = useToast();
   const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
@@ -74,6 +77,17 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
   const handleToggle = async (key: keyof typeof notifications, checked: boolean) => {
     await impact('light');
     setNotifications({ ...notifications, [key]: checked });
+  };
+
+  const handleReminderToggle = async (checked: boolean) => {
+    await impact('light');
+    setRemindersEnabled(checked);
+    toast({
+      title: checked ? "Hearing Reminders Enabled" : "Hearing Reminders Disabled",
+      description: checked 
+        ? "You'll receive reminders before your scheduled hearings." 
+        : "You won't receive hearing reminder notifications.",
+    });
   };
 
   const handleRegisterPushNotifications = async () => {
@@ -409,6 +423,12 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
               label="Case Updates" 
               toggle={notifications.caseUpdates}
               onToggle={(checked) => handleToggle('caseUpdates', checked)}
+            />
+            <SettingItem 
+              icon={BellRing} 
+              label="Hearing Reminders" 
+              toggle={isRemindersEnabled}
+              onToggle={handleReminderToggle}
             />
             <SettingItem 
               icon={Star} 
