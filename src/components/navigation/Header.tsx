@@ -16,6 +16,7 @@ interface HeaderProps {
   onUpgradePlan?: () => void;
   onLogout?: () => void;
   onFeedback?: () => void;
+  onSupport?: () => void;
   notificationCount?: number;
 }
 
@@ -32,6 +33,7 @@ export function Header({
   onUpgradePlan,
   onLogout,
   onFeedback,
+  onSupport,
   notificationCount,
 }: HeaderProps) {
   return (
@@ -73,6 +75,7 @@ export function Header({
                 onProfile={onProfileClick}
                 onUpgradePlan={onUpgradePlan}
                 onFeedback={onFeedback}
+                onSupport={onSupport}
                 onLogout={onLogout}
               />
             ) : (
