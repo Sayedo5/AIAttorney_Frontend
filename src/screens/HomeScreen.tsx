@@ -21,7 +21,7 @@ interface HomeScreenProps {
 const quickActions = [
   { icon: MessageCircle, title: "New Chat", description: "Start a legal conversation", tab: "chat" },
   { icon: FileText, title: "Draft Docu...", description: "Create legal documents", tab: "documents" },
-  { icon: Scale, title: "Case Resear...", description: "Search case law", tab: "library" },
+  { icon: Scale, title: "Case Resear...", description: "Search case law", tab: "case-research" },
   { icon: BookOpen, title: "Cases Diary", description: "Manage your cases", tab: "cases" },
 ];
 

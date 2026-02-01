@@ -18,12 +18,13 @@ import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
 import { PricingScreen } from "@/screens/PricingScreen";
 import { AboutScreen } from "@/screens/AboutScreen";
 import { ContactScreen } from "@/screens/ContactScreen";
+import { CaseResearchScreen } from "@/screens/CaseResearchScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -248,6 +249,7 @@ const Index = () => {
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
             {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
             {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
+            {activeTab === "case-research" && <CaseResearchScreen />}
           </motion.div>
         )}
       </AnimatePresence>
