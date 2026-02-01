@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Screens
@@ -24,53 +24,10 @@ import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
 type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact";
-type AppPhase = "splash" | "onboarding" | "auth" | "main";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
+const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
 
-// Smooth transition variants for major screen changes
-const screenTransition = {
-  initial: { opacity: 0, scale: 0.96 },
-  animate: { 
-    opacity: 1, 
-    scale: 1,
-    transition: {
-      duration: 0.4,
-      ease: "easeOut" as const
-    }
-  },
-  exit: { 
-    opacity: 0, 
-    scale: 1.02,
-    transition: {
-      duration: 0.3,
-      ease: "easeIn" as const
-    }
-  },
-};
-
-// Auth screen transitions (slide effect)
-const authTransition = {
-  initial: { opacity: 0, x: 30 },
-  animate: { 
-    opacity: 1, 
-    x: 0,
-    transition: {
-      duration: 0.35,
-      ease: "easeOut" as const
-    }
-  },
-  exit: { 
-    opacity: 0, 
-    x: -30,
-    transition: {
-      duration: 0.25,
-      ease: "easeIn" as const
-    }
-  },
-};
-
-// Page navigation transitions
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
   animate: { opacity: 1, x: 0 },
@@ -78,6 +35,10 @@ const pageVariants = {
 };
 
 const Index = () => {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Show splash on every app load for branding
+    return true;
+  });
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
     return localStorage.getItem(ONBOARDING_KEY) === "true";
   });
@@ -85,18 +46,6 @@ const Index = () => {
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
-  
-  // Determine current app phase
-  const [showSplash, setShowSplash] = useState(true);
-
-  const getCurrentPhase = (): AppPhase => {
-    if (showSplash) return "splash";
-    if (!hasCompletedOnboarding) return "onboarding";
-    if (!isAuthenticated) return "auth";
-    return "main";
-  };
-
-  const currentPhase = getCurrentPhase();
 
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -176,164 +125,135 @@ const Index = () => {
     setActiveTab("home");
   };
 
+  // Splash screen
+  if (showSplash) {
+    return (
+      <div className="app-container">
+        <SplashScreen onComplete={handleSplashComplete} />
+      </div>
+    );
+  }
+
+  // Onboarding screen
+  if (!hasCompletedOnboarding) {
+    return (
+      <div className="app-container">
+        <OnboardingScreen onComplete={handleOnboardingComplete} />
+      </div>
+    );
+  }
+
+  // Auth screens
+  if (!isAuthenticated) {
+    return (
+      <div className="app-container">
+        <AnimatePresence mode="wait">
+          {authScreen === "login" && (
+            <motion.div
+              key="login"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <LoginScreen
+                onLogin={handleLogin}
+                onSignupClick={() => setAuthScreen("signup")}
+                onForgotPasswordClick={() => setAuthScreen("forgot-password")}
+              />
+            </motion.div>
+          )}
+          {authScreen === "signup" && (
+            <motion.div
+              key="signup"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <SignupScreen
+                onSignup={handleSignup}
+                onLoginClick={() => setAuthScreen("login")}
+              />
+            </motion.div>
+          )}
+          {authScreen === "forgot-password" && (
+            <motion.div
+              key="forgot-password"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <ForgotPasswordScreen
+                onBack={() => setAuthScreen("login")}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  }
+
+  // Main app with bottom navigation
   return (
     <div className="app-container">
       <AnimatePresence mode="wait">
-        {/* Splash Screen */}
-        {currentPhase === "splash" && (
+        {showHistory ? (
           <motion.div
-            key="splash"
-            variants={screenTransition}
+            key="history"
+            variants={pageVariants}
             initial="initial"
             animate="animate"
             exit="exit"
+            transition={{ duration: 0.2 }}
           >
-            <SplashScreen onComplete={handleSplashComplete} />
+            <ChatHistoryScreen
+              onBack={handleBackFromHistory}
+              onSelectChat={(id) => {
+                setShowHistory(false);
+                setActiveTab("chat");
+              }}
+            />
           </motion.div>
-        )}
-
-        {/* Onboarding Screen */}
-        {currentPhase === "onboarding" && (
+        ) : (
           <motion.div
-            key="onboarding"
-            variants={screenTransition}
+            key={activeTab}
+            variants={pageVariants}
             initial="initial"
             animate="animate"
             exit="exit"
-          >
-            <OnboardingScreen onComplete={handleOnboardingComplete} />
-          </motion.div>
-        )}
-
-        {/* Auth Screens */}
-        {currentPhase === "auth" && (
-          <motion.div
-            key="auth"
-            variants={screenTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
+            transition={{ duration: 0.2 }}
             className="min-h-screen"
           >
-            <AnimatePresence mode="wait">
-              {authScreen === "login" && (
-                <motion.div
-                  key="login"
-                  variants={authTransition}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <LoginScreen
-                    onLogin={handleLogin}
-                    onSignupClick={() => setAuthScreen("signup")}
-                    onForgotPasswordClick={() => setAuthScreen("forgot-password")}
-                  />
-                </motion.div>
-              )}
-              {authScreen === "signup" && (
-                <motion.div
-                  key="signup"
-                  variants={authTransition}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <SignupScreen
-                    onSignup={handleSignup}
-                    onLoginClick={() => setAuthScreen("login")}
-                  />
-                </motion.div>
-              )}
-              {authScreen === "forgot-password" && (
-                <motion.div
-                  key="forgot-password"
-                  variants={authTransition}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  <ForgotPasswordScreen
-                    onBack={() => setAuthScreen("login")}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        )}
-
-        {/* Main App */}
-        {currentPhase === "main" && (
-          <motion.div
-            key="main"
-            variants={screenTransition}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            className="min-h-screen"
-          >
-            <AnimatePresence mode="wait">
-              {showHistory ? (
-                <motion.div
-                  key="history"
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.2 }}
-                >
-                  <ChatHistoryScreen
-                    onBack={handleBackFromHistory}
-                    onSelectChat={(id) => {
-                      setShowHistory(false);
-                      setActiveTab("chat");
-                    }}
-                  />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key={activeTab}
-                  variants={pageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                  transition={{ duration: 0.2 }}
-                  className="min-h-screen"
-                >
-                  {activeTab === "home" && (
-                    <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
-                  )}
-                  {activeTab === "settings" && (
-                    <SettingsScreen 
-                      onBack={handleBackFromSettings} 
-                      onLogout={handleLogout} 
-                      onEditProfile={handleProfileEditClick}
-                      onPricing={handlePricingClick}
-                      onAbout={handleAboutClick}
-                      onContact={handleContactClick}
-                    />
-                  )}
-                  {activeTab === "profile-edit" && (
-                    <ProfileEditScreen onBack={handleBackFromProfileEdit} />
-                  )}
-                  {activeTab === "chat" && (
-                    <ChatScreen onHistoryClick={handleHistoryClick} />
-                  )}
-                  {activeTab === "library" && <LibraryScreen />}
-                  {activeTab === "documents" && <DocumentsScreen />}
-                  {activeTab === "cases" && <CasesScreen />}
-                  {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
-                  {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
-                  {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            {/* Bottom Navigation */}
-            <BottomNav activeTab={activeTab} onTabChange={handleNavigate} />
+            {activeTab === "home" && (
+              <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
+            )}
+            {activeTab === "settings" && (
+              <SettingsScreen 
+                onBack={handleBackFromSettings} 
+                onLogout={handleLogout} 
+                onEditProfile={handleProfileEditClick}
+                onPricing={handlePricingClick}
+                onAbout={handleAboutClick}
+                onContact={handleContactClick}
+              />
+            )}
+            {activeTab === "profile-edit" && (
+              <ProfileEditScreen onBack={handleBackFromProfileEdit} />
+            )}
+            {activeTab === "chat" && (
+              <ChatScreen onHistoryClick={handleHistoryClick} />
+            )}
+            {activeTab === "library" && <LibraryScreen />}
+            {activeTab === "documents" && <DocumentsScreen />}
+            {activeTab === "cases" && <CasesScreen />}
+            {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
+            {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
+            {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Bottom Navigation */}
+      <BottomNav activeTab={activeTab} onTabChange={handleNavigate} />
     </div>
   );
 };
