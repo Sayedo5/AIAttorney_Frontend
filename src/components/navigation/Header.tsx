@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, MoreVertical, Bell, Settings } from "lucide-react";
+import { ArrowLeft, Bell, Settings } from "lucide-react";
 import { IconButton } from "@/components/ui/icon-button";
+import { ProfileDropdown } from "@/components/navigation/ProfileDropdown";
 
 interface HeaderProps {
   title?: string;
@@ -9,6 +10,11 @@ interface HeaderProps {
   rightAction?: React.ReactNode;
   transparent?: boolean;
   onSettingsClick?: () => void;
+  showProfile?: boolean;
+  userName?: { firstName: string; lastName: string };
+  onProfileClick?: () => void;
+  onUpgradePlan?: () => void;
+  onLogout?: () => void;
 }
 
 export function Header({ 
@@ -17,7 +23,12 @@ export function Header({
   onBack, 
   rightAction,
   transparent = false,
-  onSettingsClick
+  onSettingsClick,
+  showProfile = false,
+  userName = { firstName: "User", lastName: "" },
+  onProfileClick,
+  onUpgradePlan,
+  onLogout,
 }: HeaderProps) {
   return (
     <motion.header
@@ -37,7 +48,7 @@ export function Header({
           />
         )}
         {title && (
-          <h1 className="text-lg font-display font-semibold">{title}</h1>
+          <h1 className="text-lg font-display font-semibold text-foreground">{title}</h1>
         )}
       </div>
       
@@ -48,13 +59,25 @@ export function Header({
               variant="ghost"
               size="sm"
               icon={<Bell className="w-5 h-5" />}
+              className="hover:bg-accent/50 transition-colors"
             />
-            <IconButton
-              variant="ghost"
-              size="sm"
-              icon={<Settings className="w-5 h-5" />}
-              onClick={onSettingsClick}
-            />
+            {showProfile ? (
+              <ProfileDropdown
+                firstName={userName.firstName}
+                lastName={userName.lastName}
+                onProfile={onProfileClick}
+                onUpgradePlan={onUpgradePlan}
+                onLogout={onLogout}
+              />
+            ) : (
+              <IconButton
+                variant="ghost"
+                size="sm"
+                icon={<Settings className="w-5 h-5" />}
+                onClick={onSettingsClick}
+                className="hover:bg-accent/50 transition-colors"
+              />
+            )}
           </>
         )}
       </div>

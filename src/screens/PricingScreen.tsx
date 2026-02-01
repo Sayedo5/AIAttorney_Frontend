@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Check, Zap, Crown, Building2 } from "lucide-react";
+import { ArrowLeft, Check, Crown, Zap, BookOpen } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useHaptics } from "@/hooks/useHaptics";
 
@@ -7,63 +8,68 @@ interface PricingScreenProps {
   onBack: () => void;
 }
 
+type BillingPeriod = "monthly" | "annually" | "custom";
+
 const plans = [
   {
-    name: "Free",
-    price: "0",
-    period: "forever",
-    icon: Zap,
-    description: "Perfect for getting started",
+    name: "Student",
+    icon: BookOpen,
+    monthlyPrice: "1,000",
+    yearlyPrice: "10,000",
+    originalYearlyPrice: "12,000",
+    description: "Get started right away, with AI Attorney's Student every month, including:",
     features: [
-      "5 AI queries per day",
-      "Basic case law search",
-      "Document templates",
-      "Email support",
+      "500 Chat Prompts",
+      "Limited Library Access",
+      "40 Document Drafts",
+      "40 Document Reviews",
     ],
     popular: false,
-    buttonText: "Current Plan",
-    disabled: true,
+    buttonText: "Buy Plan",
   },
   {
-    name: "Professional",
-    price: "2,999",
-    period: "month",
+    name: "Premium",
     icon: Crown,
-    description: "For practicing advocates",
+    monthlyPrice: "5,000",
+    yearlyPrice: "60,000",
+    originalYearlyPrice: "72,000",
+    description: "Get started right away, with AI Attorney's Premium every month, including:",
     features: [
-      "Unlimited AI queries",
-      "Advanced case research",
-      "Document drafting",
-      "Priority support",
-      "Case management",
-      "Export to PDF/Word",
+      "1800 Chat Prompts",
+      "Library Access",
+      "300 Document Drafts",
+      "Case Diary Entries",
+      "Cause List Access",
+      "180 Document Reviews",
+      "15 User Templates",
     ],
     popular: true,
-    buttonText: "Upgrade Now",
-    disabled: false,
+    buttonText: "Buy Plan",
   },
   {
-    name: "Enterprise",
-    price: "Custom",
-    period: "contact us",
-    icon: Building2,
-    description: "For law firms & teams",
+    name: "Basic Plan",
+    icon: Zap,
+    monthlyPrice: "2,500",
+    yearlyPrice: "25,000",
+    originalYearlyPrice: "30,000",
+    description: "Get started right away, with AI Attorney's Basic Plan every month, including:",
     features: [
-      "Everything in Professional",
-      "Team collaboration",
-      "Custom integrations",
-      "Dedicated support",
-      "Training sessions",
-      "SLA guarantee",
+      "840 Chat Prompts",
+      "3600 Library Searches",
+      "120 Document Drafts",
+      "60 Document Reviews",
+      "600 Case Diary Entries",
+      "Cause List Access",
+      "5 User Templates",
     ],
     popular: false,
-    buttonText: "Contact Sales",
-    disabled: false,
+    buttonText: "Buy Plan",
   },
 ];
 
 export function PricingScreen({ onBack }: PricingScreenProps) {
   const { impact } = useHaptics();
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annually");
 
   const handleBack = async () => {
     await impact("light");
@@ -75,6 +81,11 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
     // Handle plan selection
   };
 
+  const handleBillingChange = async (period: BillingPeriod) => {
+    await impact("light");
+    setBillingPeriod(period);
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
@@ -83,27 +94,37 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={handleBack}
-            className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center"
+            className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center hover:bg-muted transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </motion.button>
-          <h1 className="text-xl font-semibold text-foreground">Pricing</h1>
+          <h1 className="text-xl font-display font-semibold text-foreground">Pricing</h1>
         </div>
       </div>
 
       <div className="px-4 py-6 space-y-6">
-        {/* Hero */}
+        {/* Billing Toggle */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center"
+          className="flex justify-center"
         >
-          <h2 className="text-2xl font-display font-bold text-foreground mb-2">
-            Choose Your Plan
-          </h2>
-          <p className="text-muted-foreground">
-            Unlock the full power of AI Attorney
-          </p>
+          <div className="inline-flex items-center bg-card border border-border rounded-full p-1">
+            {(["monthly", "annually", "custom"] as BillingPeriod[]).map((period) => (
+              <motion.button
+                key={period}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleBillingChange(period)}
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                  billingPeriod === period
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {period.charAt(0).toUpperCase() + period.slice(1)}
+              </motion.button>
+            ))}
+          </div>
         </motion.div>
 
         {/* Plans */}
@@ -116,75 +137,89 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
               transition={{ delay: 0.1 * index }}
             >
               <Card
-                className={`p-6 relative overflow-hidden ${
+                className={`relative overflow-hidden transition-all duration-300 hover:shadow-lg ${
                   plan.popular
-                    ? "border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10"
-                    : "border border-border"
+                    ? "border-2 border-primary shadow-glow"
+                    : "border border-border hover:border-primary/30"
                 }`}
               >
+                {/* Popular Badge */}
                 {plan.popular && (
-                  <div className="absolute top-4 right-4">
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary text-primary-foreground">
-                      Most Popular
+                  <div className="absolute -top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <span className="px-4 py-1.5 text-xs font-semibold rounded-full bg-primary text-primary-foreground shadow-md">
+                      Most popular
                     </span>
                   </div>
                 )}
 
-                <div className="flex items-start gap-4 mb-4">
-                  <div
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                      plan.popular ? "bg-primary/20" : "bg-secondary"
+                <div className="p-6 pt-8">
+                  {/* Plan Header */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-display font-bold text-foreground">
+                        {plan.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                        {plan.description}
+                      </p>
+                    </div>
+                    {billingPeriod === "annually" && (
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary text-primary-foreground whitespace-nowrap">
+                        Save 17%
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Pricing */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm font-medium text-muted-foreground">PKR</span>
+                      <span className="text-4xl font-display font-bold text-foreground">
+                        {billingPeriod === "annually" ? plan.yearlyPrice : plan.monthlyPrice}
+                      </span>
+                      <span className="text-muted-foreground">
+                        /{billingPeriod === "annually" ? "year" : "month"}
+                      </span>
+                    </div>
+                    {billingPeriod === "annually" && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        PKR {plan.originalYearlyPrice}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Buy Button */}
+                  <motion.button
+                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.01 }}
+                    onClick={() => handleSelectPlan(plan.name)}
+                    className={`w-full py-3.5 rounded-xl font-semibold transition-all duration-200 ${
+                      plan.popular
+                        ? "btn-primary-gradient"
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground"
                     }`}
                   >
-                    <plan.icon
-                      className={`w-6 h-6 ${
-                        plan.popular ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-foreground">
-                      {plan.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {plan.description}
-                    </p>
-                  </div>
+                    {plan.buttonText}
+                  </motion.button>
+
+                  {/* Features */}
+                  <ul className="space-y-3 mt-6">
+                    {plan.features.map((feature, i) => (
+                      <motion.li
+                        key={i}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.15 + 0.03 * i }}
+                        className="flex items-center gap-3"
+                      >
+                        <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Check className="w-3 h-3 text-primary" />
+                        </div>
+                        <span className="text-sm text-foreground">{feature}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
                 </div>
-
-                <div className="mb-4">
-                  <span className="text-3xl font-bold text-foreground">
-                    {plan.price === "Custom" ? "" : "PKR "}
-                    {plan.price}
-                  </span>
-                  <span className="text-muted-foreground">/{plan.period}</span>
-                </div>
-
-                <ul className="space-y-2 mb-6">
-                  {plan.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2">
-                      <div className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Check className="w-3 h-3 text-primary" />
-                      </div>
-                      <span className="text-sm text-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <motion.button
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleSelectPlan(plan.name)}
-                  disabled={plan.disabled}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all ${
-                    plan.popular
-                      ? "btn-primary-gradient"
-                      : plan.disabled
-                      ? "bg-secondary text-muted-foreground cursor-not-allowed"
-                      : "bg-secondary hover:bg-secondary/80 text-foreground"
-                  }`}
-                >
-                  {plan.buttonText}
-                </motion.button>
               </Card>
             </motion.div>
           ))}
@@ -199,7 +234,7 @@ export function PricingScreen({ onBack }: PricingScreenProps) {
         >
           <p className="text-sm text-muted-foreground">
             Have questions?{" "}
-            <button className="text-primary hover:text-primary-glow transition-colors">
+            <button className="text-primary hover:text-primary-glow transition-colors font-medium">
               View FAQ
             </button>
           </p>

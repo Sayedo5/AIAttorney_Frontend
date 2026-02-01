@@ -3,14 +3,14 @@ import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
   Camera, 
-  User, 
   Mail, 
   Phone, 
   MapPin, 
   Briefcase,
   Save,
   X,
-  ImageIcon
+  ImageIcon,
+  User
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -258,8 +258,9 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
           <div className="relative">
             <motion.div
               whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
               onClick={handleAvatarClick}
-              className="w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 border-4 border-primary/30 flex items-center justify-center cursor-pointer overflow-hidden"
+              className="w-28 h-28 rounded-full bg-primary border-4 border-primary/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-lg hover:shadow-glow transition-all duration-300"
             >
               {profile.avatar ? (
                 <img 
@@ -268,15 +269,18 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <User className="w-12 h-12 text-primary" />
+                <span className="text-3xl font-bold text-primary-foreground">
+                  {profile.name.split(" ").map(n => n.charAt(0).toUpperCase()).join("").slice(0, 2)}
+                </span>
               )}
             </motion.div>
             
             <motion.button
               type="button"
               whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.1 }}
               onClick={handleAvatarClick}
-              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg"
+              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg hover:shadow-glow transition-all duration-200"
             >
               <Camera className="w-5 h-5" />
             </motion.button>
@@ -287,8 +291,9 @@ export const ProfileEditScreen = ({ onBack, initialData, onSave }: ProfileEditSc
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.1 }}
                 onClick={handleRemoveAvatar}
-                className="absolute top-0 right-0 w-8 h-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-lg"
+                className="absolute top-0 right-0 w-8 h-8 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow-lg transition-all duration-200"
               >
                 <X className="w-4 h-4" />
               </motion.button>
