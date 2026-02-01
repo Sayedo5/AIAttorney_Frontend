@@ -20,12 +20,13 @@ import { AboutScreen } from "@/screens/AboutScreen";
 import { ContactScreen } from "@/screens/ContactScreen";
 import { CaseResearchScreen } from "@/screens/CaseResearchScreen";
 import { FeedbackScreen } from "@/screens/FeedbackScreen";
+import { BookmarkedCasesScreen } from "@/screens/BookmarkedCasesScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -127,6 +128,14 @@ const Index = () => {
 
   const handleBackFromFeedback = () => {
     setActiveTab("settings");
+  };
+
+  const handleBookmarkedCasesClick = () => {
+    setActiveTab("bookmarked-cases");
+  };
+
+  const handleBackFromBookmarkedCases = () => {
+    setActiveTab("library");
   };
 
   const handleLogout = () => {
@@ -258,7 +267,7 @@ const Index = () => {
             {activeTab === "chat" && (
               <ChatScreen onHistoryClick={handleHistoryClick} />
             )}
-            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} />}
+            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} />}
             {activeTab === "documents" && <DocumentsScreen />}
             {activeTab === "cases" && <CasesScreen />}
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
@@ -266,6 +275,7 @@ const Index = () => {
             {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
             {activeTab === "case-research" && <CaseResearchScreen />}
             {activeTab === "feedback" && <FeedbackScreen onBack={handleBackFromFeedback} />}
+            {activeTab === "bookmarked-cases" && <BookmarkedCasesScreen onBack={handleBackFromBookmarkedCases} />}
           </motion.div>
         )}
       </AnimatePresence>

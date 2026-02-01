@@ -16,6 +16,7 @@ import { Header } from "@/components/navigation/Header";
 interface LibraryScreenProps {
   onSettingsClick?: () => void;
   onLogout?: () => void;
+  onBookmarkedCasesClick?: () => void;
 }
 
 interface Category {
@@ -94,7 +95,7 @@ const sampleDocuments = [
   },
 ];
 
-export function LibraryScreen({ onSettingsClick, onLogout }: LibraryScreenProps) {
+export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick }: LibraryScreenProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["cases", "acts", "codes"]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CategoryItem | null>(null);
@@ -109,6 +110,11 @@ export function LibraryScreen({ onSettingsClick, onLogout }: LibraryScreenProps)
   };
 
   const handleItemClick = (item: CategoryItem) => {
+    // Check if it's the "Saved Cases" bookmark item
+    if (item.id === "bm1" && onBookmarkedCasesClick) {
+      onBookmarkedCasesClick();
+      return;
+    }
     setSelectedItem(item);
     setSelectedCategory(item.id);
   };

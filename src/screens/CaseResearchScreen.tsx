@@ -16,10 +16,13 @@ import {
   ChevronDown,
   ArrowUpDown,
   Calendar,
-  Building2
+  Building2,
+  Bookmark
 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { Card } from "@/components/ui/card";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { useToast } from "@/hooks/use-toast";
 
 type SearchCategory = "all" | "civil" | "criminal";
 type SortOption = "relevance" | "newest" | "oldest" | "cited";
@@ -153,6 +156,9 @@ export function CaseResearchScreen() {
     yearTo: "",
     sortBy: "relevance",
   });
+  
+  const { isBookmarked, toggleBookmark } = useBookmarks();
+  const { toast } = useToast();
 
   const handleSearch = () => {
     if (!searchQuery.trim()) return;
@@ -206,6 +212,18 @@ export function CaseResearchScreen() {
       setShowResults(false);
       setSearchQuery("");
     }
+  };
+
+  const handleBookmarkToggle = (caseItem: CaseResult, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const wasBookmarked = isBookmarked(caseItem.id);
+    toggleBookmark(caseItem);
+    toast({
+      title: wasBookmarked ? "Bookmark removed" : "Case bookmarked",
+      description: wasBookmarked 
+        ? `"${caseItem.title}" removed from bookmarks`
+        : `"${caseItem.title}" saved to your bookmarks`,
+    });
   };
 
   const clearFilters = () => {
@@ -528,7 +546,22 @@ export function CaseResearchScreen() {
                               {caseItem.summary}
                             </p>
                           </div>
-                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+                          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+                            <motion.button
+                              whileTap={{ scale: 0.9 }}
+                              onClick={(e) => handleBookmarkToggle(caseItem, e)}
+                              className="p-2 rounded-lg hover:bg-accent/50 transition-colors"
+                            >
+                              <Bookmark 
+                                className={`w-5 h-5 transition-colors ${
+                                  isBookmarked(caseItem.id) 
+                                    ? "fill-primary text-primary" 
+                                    : "text-muted-foreground group-hover:text-primary"
+                                }`} 
+                              />
+                            </motion.button>
+                            <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                          </div>
                         </div>
                       </Card>
                     </motion.div>
