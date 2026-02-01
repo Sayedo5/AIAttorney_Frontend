@@ -5,9 +5,10 @@ import { Eye, EyeOff, ArrowRight, Scale } from "lucide-react";
 interface SignupScreenProps {
   onSignup: () => void;
   onLoginClick: () => void;
+  onTermsClick?: () => void;
 }
 
-export function SignupScreen({ onSignup, onLoginClick }: SignupScreenProps) {
+export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScreenProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -198,9 +199,9 @@ export function SignupScreen({ onSignup, onLoginClick }: SignupScreenProps) {
                 />
                 <span className="text-sm text-muted-foreground">
                   I agree to the{" "}
-                  <button className="text-primary hover:text-primary-glow transition-colors">Terms of Service</button>
+                  <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Terms of Service</button>
                   {" "}and{" "}
-                  <button className="text-primary hover:text-primary-glow transition-colors">Privacy Policy</button>
+                  <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Privacy Policy</button>
                 </span>
               </label>
 

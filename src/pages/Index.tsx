@@ -27,7 +27,7 @@ import { TermsOfServiceScreen } from "@/screens/TermsOfServiceScreen";
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
-type AuthScreen = "login" | "signup" | "forgot-password";
+type AuthScreen = "login" | "signup" | "forgot-password" | "terms";
 type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
@@ -210,6 +210,7 @@ const Index = () => {
               <SignupScreen
                 onSignup={handleSignup}
                 onLoginClick={() => setAuthScreen("login")}
+                onTermsClick={() => setAuthScreen("terms")}
               />
             </motion.div>
           )}
@@ -222,6 +223,18 @@ const Index = () => {
             >
               <ForgotPasswordScreen
                 onBack={() => setAuthScreen("login")}
+              />
+            </motion.div>
+          )}
+          {authScreen === "terms" && (
+            <motion.div
+              key="terms-auth"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <TermsOfServiceScreen
+                onBack={() => setAuthScreen("signup")}
               />
             </motion.div>
           )}
