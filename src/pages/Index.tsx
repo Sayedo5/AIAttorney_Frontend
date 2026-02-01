@@ -143,11 +143,12 @@ const Index = () => {
   };
 
   const handleRemindersClick = () => {
+    setPreviousTab(activeTab);
     setActiveTab("reminders");
   };
 
   const handleBackFromReminders = () => {
-    setActiveTab("cases");
+    setActiveTab(previousTab);
   };
 
   const handleTermsClick = () => {
@@ -284,6 +285,7 @@ const Index = () => {
                 onLogout={handleLogout}
                 onFeedback={handleFeedbackClick}
                 onSupport={handleContactClick}
+                onNotificationsClick={handleRemindersClick}
               />
             )}
             {activeTab === "settings" && (

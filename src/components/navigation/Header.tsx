@@ -17,6 +17,7 @@ interface HeaderProps {
   onLogout?: () => void;
   onFeedback?: () => void;
   onSupport?: () => void;
+  onNotificationsClick?: () => void;
   notificationCount?: number;
 }
 
@@ -34,6 +35,7 @@ export function Header({
   onLogout,
   onFeedback,
   onSupport,
+  onNotificationsClick,
   notificationCount,
 }: HeaderProps) {
   return (
@@ -67,6 +69,7 @@ export function Header({
               icon={<Bell className="w-5 h-5" />}
               badge={notificationCount && notificationCount > 0 ? notificationCount : undefined}
               className="hover:bg-accent/50 transition-colors"
+              onClick={onNotificationsClick}
             />
             {showProfile ? (
               <ProfileDropdown
