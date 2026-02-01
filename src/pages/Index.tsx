@@ -225,7 +225,12 @@ const Index = () => {
             className="min-h-screen"
           >
             {activeTab === "home" && (
-              <HomeScreen onNavigate={handleNavigate} userName="Advocate" onSettingsClick={handleSettingsClick} />
+              <HomeScreen 
+                onNavigate={handleNavigate} 
+                userName="Advocate User" 
+                onSettingsClick={handleSettingsClick}
+                onLogout={handleLogout}
+              />
             )}
             {activeTab === "settings" && (
               <SettingsScreen 
