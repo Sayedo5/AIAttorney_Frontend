@@ -134,20 +134,6 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
       <Header 
         title="Cases Diary" 
         onSettingsClick={onSettingsClick}
-        rightAction={
-          <div className="flex gap-2">
-            <IconButton
-              variant="ghost"
-              size="sm"
-              icon={<Bell className="w-5 h-5" />}
-            />
-            <IconButton
-              variant="gradient"
-              size="sm"
-              icon={<Plus className="w-5 h-5" />}
-            />
-          </div>
-        }
       />
 
       {/* Quick Stats */}
