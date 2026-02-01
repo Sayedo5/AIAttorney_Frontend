@@ -25,8 +25,8 @@ interface ProfileDropdownProps {
 const menuItems = [
   { icon: User, label: "Profile", action: "profile" },
   { icon: Crown, label: "Upgrade Plan", action: "upgrade" },
-  { icon: Headphones, label: "Support", action: "support" },
-  { icon: MessageSquare, label: "Feedback", action: "feedback" },
+  { icon: Headphones, label: "Support", action: "support", url: "https://aiattorney.com.pk/contact" },
+  { icon: MessageSquare, label: "Feedback", action: "feedback", url: "https://aiattorney.com.pk/contact" },
   { icon: LogOut, label: "Logout", action: "logout" },
 ];
 
@@ -43,8 +43,15 @@ export function ProfileDropdown({
 }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleAction = (action: string) => {
+  const handleAction = (action: string, url?: string) => {
     setIsOpen(false);
+    
+    // Handle external URLs
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      return;
+    }
+    
     switch (action) {
       case "profile":
         onProfile?.();
@@ -102,11 +109,19 @@ export function ProfileDropdown({
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.02 * index }}
-                    onClick={() => handleAction(item.action)}
-                    className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-foreground hover:bg-accent/50 transition-colors group"
+                    onClick={() => handleAction(item.action, item.url)}
+                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
+                      item.action === "logout" 
+                        ? "text-destructive hover:bg-destructive/10" 
+                        : "text-foreground hover:bg-accent/50"
+                    }`}
                   >
                     <span className="font-medium text-sm">{item.label}</span>
-                    <item.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <item.icon className={`w-5 h-5 transition-colors ${
+                      item.action === "logout"
+                        ? "text-destructive"
+                        : "text-muted-foreground group-hover:text-primary"
+                    }`} />
                   </motion.button>
                 ))}
               </div>
