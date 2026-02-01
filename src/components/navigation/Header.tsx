@@ -15,6 +15,7 @@ interface HeaderProps {
   onProfileClick?: () => void;
   onUpgradePlan?: () => void;
   onLogout?: () => void;
+  onFeedback?: () => void;
 }
 
 export function Header({ 
@@ -29,6 +30,7 @@ export function Header({
   onProfileClick,
   onUpgradePlan,
   onLogout,
+  onFeedback,
 }: HeaderProps) {
   return (
     <motion.header
@@ -67,6 +69,7 @@ export function Header({
                 lastName={userName.lastName}
                 onProfile={onProfileClick}
                 onUpgradePlan={onUpgradePlan}
+                onFeedback={onFeedback}
                 onLogout={onLogout}
               />
             ) : (
