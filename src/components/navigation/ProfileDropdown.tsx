@@ -26,7 +26,7 @@ interface ProfileDropdownProps {
 const menuItems = [
   { icon: User, label: "Profile", action: "profile" },
   { icon: Crown, label: "Upgrade Plan", action: "upgrade" },
-  { icon: Headphones, label: "Support", action: "support", url: "https://aiattorney.com.pk/contact" },
+  { icon: Headphones, label: "Support", action: "support" },
   { icon: MessageSquare, label: "Feedback", action: "feedback" },
   { icon: LogOut, label: "Logout", action: "logout" },
 ];
@@ -70,13 +70,7 @@ export function ProfileDropdown({
     return document.body;
   }, []);
 
-  const handleAction = (action: string, url?: string) => {
-    // Handle external URLs
-    if (url) {
-      window.open(url, "_blank", "noopener,noreferrer");
-      setIsOpen(false);
-      return;
-    }
+  const handleAction = (action: string) => {
     
     switch (action) {
       case "profile":
@@ -145,7 +139,7 @@ export function ProfileDropdown({
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          handleAction(item.action, item.url);
+                          handleAction(item.action);
                         }}
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
                           item.action === "logout"
