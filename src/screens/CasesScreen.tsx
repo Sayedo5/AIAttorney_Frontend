@@ -90,6 +90,9 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
 
+  // Calculate upcoming hearing count for notification badge
+  const upcomingCount = cases.filter((c) => c.status === "upcoming").length;
+
   const filteredCases = cases.filter((c) => {
     if (activeFilter === "all") return true;
     return c.status === activeFilter;
@@ -134,6 +137,7 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
       <Header 
         title="Cases Diary" 
         onSettingsClick={onSettingsClick}
+        notificationCount={upcomingCount}
       />
 
       {/* Quick Stats */}

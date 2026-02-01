@@ -16,6 +16,7 @@ interface HeaderProps {
   onUpgradePlan?: () => void;
   onLogout?: () => void;
   onFeedback?: () => void;
+  notificationCount?: number;
 }
 
 export function Header({ 
@@ -31,6 +32,7 @@ export function Header({
   onUpgradePlan,
   onLogout,
   onFeedback,
+  notificationCount,
 }: HeaderProps) {
   return (
     <motion.header
@@ -61,6 +63,7 @@ export function Header({
               variant="ghost"
               size="sm"
               icon={<Bell className="w-5 h-5" />}
+              badge={notificationCount && notificationCount > 0 ? notificationCount : undefined}
               className="hover:bg-accent/50 transition-colors"
             />
             {showProfile ? (
