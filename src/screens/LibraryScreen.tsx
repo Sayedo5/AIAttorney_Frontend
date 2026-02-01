@@ -13,7 +13,10 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 
-interface LibraryScreenProps {}
+interface LibraryScreenProps {
+  onSettingsClick?: () => void;
+  onLogout?: () => void;
+}
 
 interface Category {
   id: string;
@@ -91,7 +94,7 @@ const sampleDocuments = [
   },
 ];
 
-export function LibraryScreen({}: LibraryScreenProps) {
+export function LibraryScreen({ onSettingsClick, onLogout }: LibraryScreenProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["cases", "acts", "codes"]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CategoryItem | null>(null);
@@ -121,7 +124,7 @@ export function LibraryScreen({}: LibraryScreenProps) {
   if (selectedItem) {
     return (
       <div className="min-h-screen bg-background pb-24">
-        <Header title="Library" />
+        <Header title="Library" onSettingsClick={onSettingsClick} />
         
         <div className="px-4 py-4">
           {/* Back button */}
@@ -209,7 +212,7 @@ export function LibraryScreen({}: LibraryScreenProps) {
   // Main library view with sidebar categories
   return (
     <div className="min-h-screen bg-background pb-24">
-      <Header title="Legal Library" />
+      <Header title="Legal Library" onSettingsClick={onSettingsClick} />
 
       {/* Search */}
       <motion.div
