@@ -268,8 +268,8 @@ const Index = () => {
               <ChatScreen onHistoryClick={handleHistoryClick} />
             )}
             {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} />}
-            {activeTab === "documents" && <DocumentsScreen />}
-            {activeTab === "cases" && <CasesScreen />}
+            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} />}
+            {activeTab === "cases" && <CasesScreen onSettingsClick={handleSettingsClick} />}
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
             {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
             {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}

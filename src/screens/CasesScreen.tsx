@@ -15,7 +15,9 @@ import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 import { PremiumSubscriptionModal } from "@/components/modals/PremiumSubscriptionModal";
 
-interface CasesScreenProps {}
+interface CasesScreenProps {
+  onSettingsClick?: () => void;
+}
 
 const filterOptions = [
   { id: "all", label: "All" },
@@ -83,7 +85,7 @@ const upcomingHearings = [
   { day: "This Week", count: 5 },
 ];
 
-export function CasesScreen({}: CasesScreenProps) {
+export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
   const [activeFilter, setActiveFilter] = useState("all");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
@@ -131,6 +133,7 @@ export function CasesScreen({}: CasesScreenProps) {
     <div className="min-h-screen bg-background pb-24">
       <Header 
         title="Cases Diary" 
+        onSettingsClick={onSettingsClick}
         rightAction={
           <div className="flex gap-2">
             <IconButton

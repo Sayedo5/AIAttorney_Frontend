@@ -17,7 +17,9 @@ import {
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 
-interface DocumentsScreenProps {}
+interface DocumentsScreenProps {
+  onSettingsClick?: () => void;
+}
 
 const documentTypes = [
   { id: "all", label: "All" },
@@ -75,13 +77,14 @@ const quickActions = [
   { icon: Upload, label: "Upload", description: "Import file" },
 ];
 
-export function DocumentsScreen({}: DocumentsScreenProps) {
+export function DocumentsScreen({ onSettingsClick }: DocumentsScreenProps) {
   const [activeType, setActiveType] = useState("all");
 
   return (
     <div className="min-h-screen bg-background pb-24">
       <Header 
         title="Documents" 
+        onSettingsClick={onSettingsClick}
         rightAction={
           <IconButton
             variant="gradient"
