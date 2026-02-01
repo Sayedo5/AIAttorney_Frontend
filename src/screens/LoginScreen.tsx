@@ -12,14 +12,12 @@ interface LoginScreenProps {
   onLogin: () => void;
   onSignupClick: () => void;
   onForgotPasswordClick: () => void;
-  initialEmail?: string;
-  initialPassword?: string;
 }
 
-export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick, initialEmail = "", initialPassword = "" }: LoginScreenProps) {
+export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick }: LoginScreenProps) {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState(initialEmail);
-  const [password, setPassword] = useState(initialPassword);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
