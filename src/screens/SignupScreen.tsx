@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Eye, EyeOff, ArrowRight, Scale } from "lucide-react";
+import { z } from "zod";
+
+const signupSchema = z.object({
+  name: z.string().trim().min(1, "Full name is required").max(100, "Name must be less than 100 characters"),
+  email: z.string().trim().min(1, "Email is required").email("Please enter a valid email").max(255, "Email must be less than 255 characters"),
+  phone: z.string().trim().min(1, "Phone number is required").min(10, "Phone number must be at least 10 digits"),
+  password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters"),
+});
 
 interface SignupScreenProps {
-  onSignup: () => void;
+  onSignup: (email: string, password: string) => void;
   onLoginClick: () => void;
   onTermsClick?: () => void;
 }
@@ -15,6 +23,29 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string; password?: string; terms?: string }>({});
+
+  const handleSubmit = () => {
+    const result = signupSchema.safeParse({ name, email, phone, password });
+    
+    if (!result.success) {
+      const fieldErrors: typeof errors = {};
+      result.error.errors.forEach((err) => {
+        const field = err.path[0] as keyof typeof fieldErrors;
+        if (field) fieldErrors[field] = err.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+
+    if (!agreeTerms) {
+      setErrors({ terms: "You must agree to the Terms of Service and Privacy Policy" });
+      return;
+    }
+    
+    setErrors({});
+    onSignup(email, password);
+  };
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -76,7 +107,7 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
 
             {/* Social Signup */}
             <motion.button
-              onClick={onSignup}
+              onClick={() => onSignup("", "")}
               className="w-full py-3 rounded-2xl border border-border bg-card hover:bg-secondary transition-colors flex items-center justify-center gap-3 mb-4"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -105,10 +136,22 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+                  }}
                   placeholder="Enter your full name"
-                  className="input-modern"
+                  className={`input-modern ${errors.name ? "border-destructive ring-1 ring-destructive" : ""}`}
                 />
+                {errors.name && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-destructive mt-1.5"
+                  >
+                    {errors.name}
+                  </motion.p>
+                )}
               </div>
 
               {/* Email Input */}
@@ -117,10 +160,22 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
+                  }}
                   placeholder="Enter your email"
-                  className="input-modern"
+                  className={`input-modern ${errors.email ? "border-destructive ring-1 ring-destructive" : ""}`}
                 />
+                {errors.email && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-destructive mt-1.5"
+                  >
+                    {errors.email}
+                  </motion.p>
+                )}
               </div>
 
               {/* Phone Input */}
@@ -129,10 +184,22 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
                 <input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                  }}
                   placeholder="Enter your phone number"
-                  className="input-modern"
+                  className={`input-modern ${errors.phone ? "border-destructive ring-1 ring-destructive" : ""}`}
                 />
+                {errors.phone && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-destructive mt-1.5"
+                  >
+                    {errors.phone}
+                  </motion.p>
+                )}
               </div>
 
               {/* Password Input */}
@@ -142,9 +209,12 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
                   <input
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      if (errors.password) setErrors((prev) => ({ ...prev, password: undefined }));
+                    }}
                     placeholder="Create a password"
-                    className="input-modern pr-12"
+                    className={`input-modern pr-12 ${errors.password ? "border-destructive ring-1 ring-destructive" : ""}`}
                   />
                   <button
                     type="button"
@@ -154,6 +224,15 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
+                {errors.password && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-destructive mt-1.5"
+                  >
+                    {errors.password}
+                  </motion.p>
+                )}
               </div>
 
               {/* Password Strength */}
@@ -190,24 +269,38 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
               )}
 
               {/* Terms Checkbox */}
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={agreeTerms}
-                  onChange={(e) => setAgreeTerms(e.target.checked)}
-                  className="w-4 h-4 rounded border-border bg-card text-primary focus:ring-primary mt-0.5"
-                />
-                <span className="text-sm text-muted-foreground">
-                  I agree to the{" "}
-                  <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Terms of Service</button>
-                  {" "}and{" "}
-                  <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Privacy Policy</button>
-                </span>
-              </label>
+              <div>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreeTerms}
+                    onChange={(e) => {
+                      setAgreeTerms(e.target.checked);
+                      if (errors.terms) setErrors((prev) => ({ ...prev, terms: undefined }));
+                    }}
+                    className={`w-4 h-4 rounded border-border bg-card text-primary focus:ring-primary mt-0.5 ${errors.terms ? "border-destructive ring-1 ring-destructive" : ""}`}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    I agree to the{" "}
+                    <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Terms of Service</button>
+                    {" "}and{" "}
+                    <button type="button" onClick={onTermsClick} className="text-primary hover:text-primary-glow transition-colors">Privacy Policy</button>
+                  </span>
+                </label>
+                {errors.terms && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-sm text-destructive mt-1.5"
+                  >
+                    {errors.terms}
+                  </motion.p>
+                )}
+              </div>
 
               {/* Signup Button */}
               <motion.button
-                onClick={onSignup}
+                onClick={handleSubmit}
                 className="w-full btn-primary-gradient py-4 rounded-2xl font-semibold flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

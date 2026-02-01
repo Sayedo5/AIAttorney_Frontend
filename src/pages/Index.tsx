@@ -51,6 +51,7 @@ const Index = () => {
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
+  const [savedCredentials, setSavedCredentials] = useState<{ email: string; password: string } | null>(null);
 
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -66,9 +67,12 @@ const Index = () => {
     setActiveTab("home");
   };
 
-  const handleSignup = () => {
-    setIsAuthenticated(true);
-    setActiveTab("home");
+  const handleSignup = (email: string, password: string) => {
+    // Save credentials for auto-fill on login page
+    if (email && password) {
+      setSavedCredentials({ email, password });
+    }
+    setAuthScreen("login");
   };
 
   const handleNavigate = (tab: string) => {
@@ -197,6 +201,8 @@ const Index = () => {
                 onLogin={handleLogin}
                 onSignupClick={() => setAuthScreen("signup")}
                 onForgotPasswordClick={() => setAuthScreen("forgot-password")}
+                initialEmail={savedCredentials?.email}
+                initialPassword={savedCredentials?.password}
               />
             </motion.div>
           )}
