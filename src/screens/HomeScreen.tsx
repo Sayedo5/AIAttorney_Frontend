@@ -19,6 +19,7 @@ interface HomeScreenProps {
   onLogout?: () => void;
   onFeedback?: () => void;
   onSupport?: () => void;
+  onNotificationsClick?: () => void;
 }
 
 const quickActions = [
@@ -35,7 +36,7 @@ const suggestions = [
   "Explain Section 420 PPC",
 ];
 
-export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick, onLogout, onFeedback, onSupport }: HomeScreenProps) {
+export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick, onLogout, onFeedback, onSupport, onNotificationsClick }: HomeScreenProps) {
   const currentHour = new Date().getHours();
   const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
   
@@ -56,6 +57,7 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         onLogout={onLogout}
         onFeedback={onFeedback}
         onSupport={onSupport}
+        onNotificationsClick={onNotificationsClick}
       />
       
       {/* Hero Section */}
