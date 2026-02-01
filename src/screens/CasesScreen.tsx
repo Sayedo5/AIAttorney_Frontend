@@ -23,6 +23,7 @@ import { toast } from "sonner";
 interface CasesScreenProps {
   onSettingsClick?: () => void;
   onRemindersClick?: () => void;
+  onSupport?: () => void;
 }
 
 const filterOptions = [
@@ -91,7 +92,7 @@ const upcomingHearings = [
   { day: "This Week", count: 5 },
 ];
 
-export function CasesScreen({ onSettingsClick, onRemindersClick }: CasesScreenProps) {
+export function CasesScreen({ onSettingsClick, onRemindersClick, onSupport }: CasesScreenProps) {
   const [activeFilter, setActiveFilter] = useState("all");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");

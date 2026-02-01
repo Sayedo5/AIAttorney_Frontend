@@ -50,6 +50,7 @@ const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
+  const [previousTab, setPreviousTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
 
   const handleSplashComplete = () => {
@@ -85,11 +86,12 @@ const Index = () => {
   };
 
   const handleSettingsClick = () => {
+    setPreviousTab(activeTab);
     setActiveTab("settings");
   };
 
   const handleBackFromSettings = () => {
-    setActiveTab("home");
+    setActiveTab(previousTab);
   };
 
   const handleProfileEditClick = () => {
@@ -117,19 +119,19 @@ const Index = () => {
   };
 
   const handleBackFromPricing = () => {
-    setActiveTab("settings");
+    setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
 
   const handleBackFromAbout = () => {
-    setActiveTab("settings");
+    setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
 
   const handleBackFromContact = () => {
-    setActiveTab("settings");
+    setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
 
   const handleBackFromFeedback = () => {
-    setActiveTab("settings");
+    setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
 
   const handleBookmarkedCasesClick = () => {
@@ -153,7 +155,7 @@ const Index = () => {
   };
 
   const handleBackFromTerms = () => {
-    setActiveTab("settings");
+    setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
 
   const handleLogout = () => {
@@ -301,9 +303,9 @@ const Index = () => {
             {activeTab === "chat" && (
               <ChatScreen onHistoryClick={handleHistoryClick} />
             )}
-            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} />}
-            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} />}
-            {activeTab === "cases" && <CasesScreen onSettingsClick={handleSettingsClick} onRemindersClick={handleRemindersClick} />}
+            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} onSupport={handleContactClick} />}
+            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} />}
+            {activeTab === "cases" && <CasesScreen onSettingsClick={handleSettingsClick} onRemindersClick={handleRemindersClick} onSupport={handleContactClick} />}
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
             {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
             {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}

@@ -17,6 +17,7 @@ interface LibraryScreenProps {
   onSettingsClick?: () => void;
   onLogout?: () => void;
   onBookmarkedCasesClick?: () => void;
+  onSupport?: () => void;
 }
 
 interface Category {
@@ -95,7 +96,7 @@ const sampleDocuments = [
   },
 ];
 
-export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick }: LibraryScreenProps) {
+export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick, onSupport }: LibraryScreenProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["cases", "acts", "codes"]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CategoryItem | null>(null);
