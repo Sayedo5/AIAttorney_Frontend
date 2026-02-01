@@ -19,12 +19,13 @@ import { PricingScreen } from "@/screens/PricingScreen";
 import { AboutScreen } from "@/screens/AboutScreen";
 import { ContactScreen } from "@/screens/ContactScreen";
 import { CaseResearchScreen } from "@/screens/CaseResearchScreen";
+import { FeedbackScreen } from "@/screens/FeedbackScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -108,6 +109,10 @@ const Index = () => {
     setActiveTab("contact");
   };
 
+  const handleFeedbackClick = () => {
+    setActiveTab("feedback");
+  };
+
   const handleBackFromPricing = () => {
     setActiveTab("settings");
   };
@@ -117,6 +122,10 @@ const Index = () => {
   };
 
   const handleBackFromContact = () => {
+    setActiveTab("settings");
+  };
+
+  const handleBackFromFeedback = () => {
     setActiveTab("settings");
   };
 
@@ -230,6 +239,7 @@ const Index = () => {
                 userName="Advocate User" 
                 onSettingsClick={handleSettingsClick}
                 onLogout={handleLogout}
+                onFeedback={handleFeedbackClick}
               />
             )}
             {activeTab === "settings" && (
@@ -255,6 +265,7 @@ const Index = () => {
             {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}
             {activeTab === "contact" && <ContactScreen onBack={handleBackFromContact} />}
             {activeTab === "case-research" && <CaseResearchScreen />}
+            {activeTab === "feedback" && <FeedbackScreen onBack={handleBackFromFeedback} />}
           </motion.div>
         )}
       </AnimatePresence>

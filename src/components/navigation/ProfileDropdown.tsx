@@ -26,7 +26,7 @@ const menuItems = [
   { icon: User, label: "Profile", action: "profile" },
   { icon: Crown, label: "Upgrade Plan", action: "upgrade" },
   { icon: Headphones, label: "Support", action: "support", url: "https://aiattorney.com.pk/contact" },
-  { icon: MessageSquare, label: "Feedback", action: "feedback", url: "https://aiattorney.com.pk/contact" },
+  { icon: MessageSquare, label: "Feedback", action: "feedback" },
   { icon: LogOut, label: "Logout", action: "logout" },
 ];
 
