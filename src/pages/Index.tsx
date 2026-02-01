@@ -22,12 +22,13 @@ import { CaseResearchScreen } from "@/screens/CaseResearchScreen";
 import { FeedbackScreen } from "@/screens/FeedbackScreen";
 import { BookmarkedCasesScreen } from "@/screens/BookmarkedCasesScreen";
 import { RemindersScreen } from "@/screens/RemindersScreen";
+import { TermsOfServiceScreen } from "@/screens/TermsOfServiceScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -145,6 +146,14 @@ const Index = () => {
 
   const handleBackFromReminders = () => {
     setActiveTab("cases");
+  };
+
+  const handleTermsClick = () => {
+    setActiveTab("terms");
+  };
+
+  const handleBackFromTerms = () => {
+    setActiveTab("settings");
   };
 
   const handleLogout = () => {
@@ -269,6 +278,7 @@ const Index = () => {
                 onPricing={handlePricingClick}
                 onAbout={handleAboutClick}
                 onContact={handleContactClick}
+                onTerms={handleTermsClick}
               />
             )}
             {activeTab === "profile-edit" && (
@@ -287,6 +297,7 @@ const Index = () => {
             {activeTab === "feedback" && <FeedbackScreen onBack={handleBackFromFeedback} />}
             {activeTab === "bookmarked-cases" && <BookmarkedCasesScreen onBack={handleBackFromBookmarkedCases} />}
             {activeTab === "reminders" && <RemindersScreen onBack={handleBackFromReminders} />}
+            {activeTab === "terms" && <TermsOfServiceScreen onBack={handleBackFromTerms} />}
           </motion.div>
         )}
       </AnimatePresence>
