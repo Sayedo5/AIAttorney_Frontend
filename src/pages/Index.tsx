@@ -281,6 +281,7 @@ const Index = () => {
                 onSettingsClick={handleSettingsClick}
                 onLogout={handleLogout}
                 onFeedback={handleFeedbackClick}
+                onSupport={handleContactClick}
               />
             )}
             {activeTab === "settings" && (
