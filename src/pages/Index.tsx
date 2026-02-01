@@ -13,6 +13,7 @@ import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
 import { ProfileEditScreen } from "@/screens/ProfileEditScreen";
 import { OnboardingScreen } from "@/screens/OnboardingScreen";
+import { SplashScreen } from "@/screens/SplashScreen";
 import { ForgotPasswordScreen } from "@/screens/ForgotPasswordScreen";
 import { PricingScreen } from "@/screens/PricingScreen";
 import { AboutScreen } from "@/screens/AboutScreen";
@@ -25,6 +26,7 @@ type AuthScreen = "login" | "signup" | "forgot-password";
 type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
+const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
 
 const pageVariants = {
   initial: { opacity: 0, x: 20 },
@@ -33,6 +35,10 @@ const pageVariants = {
 };
 
 const Index = () => {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Show splash on every app load for branding
+    return true;
+  });
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(() => {
     return localStorage.getItem(ONBOARDING_KEY) === "true";
   });
@@ -40,6 +46,10 @@ const Index = () => {
   const [authScreen, setAuthScreen] = useState<AuthScreen>("login");
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+  };
 
   const handleOnboardingComplete = () => {
     localStorage.setItem(ONBOARDING_KEY, "true");
@@ -114,6 +124,15 @@ const Index = () => {
     setAuthScreen("login");
     setActiveTab("home");
   };
+
+  // Splash screen
+  if (showSplash) {
+    return (
+      <div className="app-container">
+        <SplashScreen onComplete={handleSplashComplete} />
+      </div>
+    );
+  }
 
   // Onboarding screen
   if (!hasCompletedOnboarding) {
