@@ -85,13 +85,6 @@ export function DocumentsScreen({ onSettingsClick }: DocumentsScreenProps) {
       <Header 
         title="Documents" 
         onSettingsClick={onSettingsClick}
-        rightAction={
-          <IconButton
-            variant="gradient"
-            size="sm"
-            icon={<Plus className="w-5 h-5" />}
-          />
-        }
       />
 
       {/* Quick Actions */}
