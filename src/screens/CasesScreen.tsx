@@ -9,11 +9,14 @@ import {
   ChevronRight,
   AlertCircle,
   CheckCircle2,
-  Bell
+  Bell,
+  BellRing
 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 import { PremiumSubscriptionModal } from "@/components/modals/PremiumSubscriptionModal";
+import { useLocalNotifications } from "@/hooks/useLocalNotifications";
+import { toast } from "sonner";
 
 interface CasesScreenProps {
   onSettingsClick?: () => void;
@@ -90,6 +93,8 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
 
+  const { scheduleMultipleReminders, cancelHearingReminder } = useLocalNotifications();
+
   // Calculate upcoming hearing count for notification badge
   const upcomingCount = cases.filter((c) => c.status === "upcoming").length;
 
@@ -125,6 +130,29 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
   const handleCaseClick = (caseItem: typeof cases[0]) => {
     setSelectedCaseTitle(caseItem.title);
     setShowPremiumModal(true);
+  };
+
+  const handleSetReminder = async (e: React.MouseEvent, caseItem: typeof cases[0]) => {
+    e.stopPropagation();
+    
+    const success = await scheduleMultipleReminders({
+      id: caseItem.id,
+      title: caseItem.title,
+      caseNumber: caseItem.caseNumber,
+      court: caseItem.court,
+      date: caseItem.date,
+      time: caseItem.time,
+    });
+
+    if (success) {
+      toast.success("Reminders set!", {
+        description: `You'll be notified before ${caseItem.title}`,
+      });
+    } else {
+      toast.error("Couldn't set reminder", {
+        description: "Please enable notifications in settings",
+      });
+    }
   };
 
   const handleSubscribe = () => {
@@ -250,7 +278,18 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(caseItem.status)}`}>
                   {caseItem.status}
                 </span>
-                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                <div className="flex items-center gap-2">
+                  {caseItem.status === "upcoming" && (
+                    <button
+                      onClick={(e) => handleSetReminder(e, caseItem)}
+                      className="p-1.5 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors"
+                      aria-label="Set reminder"
+                    >
+                      <BellRing className="w-4 h-4 text-primary" />
+                    </button>
+                  )}
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </div>
               </div>
             </div>
           </motion.div>
