@@ -20,6 +20,7 @@ import { IconButton } from "@/components/ui/icon-button";
 interface DocumentsScreenProps {
   onSettingsClick?: () => void;
   onSupport?: () => void;
+  onNotificationsClick?: () => void;
 }
 
 const documentTypes = [
@@ -78,7 +79,7 @@ const quickActions = [
   { icon: Upload, label: "Upload", description: "Import file" },
 ];
 
-export function DocumentsScreen({ onSettingsClick, onSupport }: DocumentsScreenProps) {
+export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsClick }: DocumentsScreenProps) {
   const [activeType, setActiveType] = useState("all");
 
   return (
@@ -86,6 +87,7 @@ export function DocumentsScreen({ onSettingsClick, onSupport }: DocumentsScreenP
       <Header 
         title="Documents" 
         onSettingsClick={onSettingsClick}
+        onNotificationsClick={onNotificationsClick}
       />
 
       {/* Quick Actions */}
