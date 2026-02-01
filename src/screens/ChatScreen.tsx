@@ -100,7 +100,7 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center h-full text-center px-4"
+            className="flex flex-col items-center justify-start pt-8 h-full text-center px-4"
           >
             {/* Welcome Card - AI Lawyer Style */}
             <motion.div
