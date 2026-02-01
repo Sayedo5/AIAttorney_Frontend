@@ -139,6 +139,7 @@ const Index = () => {
   };
 
   const handleLogout = () => {
+    setShowHistory(false);
     setIsAuthenticated(false);
     setAuthScreen("login");
     setActiveTab("home");

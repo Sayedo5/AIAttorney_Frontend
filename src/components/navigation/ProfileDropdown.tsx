@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   User, 
@@ -42,13 +43,38 @@ export function ProfileDropdown({
   onLogout,
 }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLDivElement | null>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+
+  const menuWidth = 224; // w-56
+  const menuGap = 8;
+  const viewportPadding = 12;
+
+  useLayoutEffect(() => {
+    if (!isOpen) return;
+    const el = triggerRef.current;
+    if (!el) return;
+
+    const rect = el.getBoundingClientRect();
+    const preferredLeft = rect.right - menuWidth;
+    const left = Math.max(
+      viewportPadding,
+      Math.min(preferredLeft, window.innerWidth - menuWidth - viewportPadding),
+    );
+    const top = rect.bottom + menuGap;
+    setMenuPos({ top, left });
+  }, [isOpen]);
+
+  const portalRoot = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    return document.body;
+  }, []);
 
   const handleAction = (action: string, url?: string) => {
-    setIsOpen(false);
-    
     // Handle external URLs
     if (url) {
       window.open(url, "_blank", "noopener,noreferrer");
+      setIsOpen(false);
       return;
     }
     
@@ -69,84 +95,99 @@ export function ProfileDropdown({
         onLogout?.();
         break;
     }
+
+    // Close the dropdown after the action is fired
+    setIsOpen(false);
   };
 
   return (
-    <div className="relative">
+    <div ref={triggerRef} className="relative">
       <UserAvatar
         firstName={firstName}
         lastName={lastName}
         imageSrc={imageSrc}
         size="md"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((v) => !v)}
       />
 
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
-              className="fixed inset-0 z-40"
-            />
-
-            {/* Dropdown Menu */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.15, ease: "easeOut" }}
-              className="absolute right-0 top-full mt-2 w-56 z-50 bg-card border border-border/50 rounded-2xl shadow-lg overflow-hidden"
-            >
-              {/* Menu Items */}
-              <div className="p-2">
-                {menuItems.map((item, index) => (
-                  <motion.button
-                    key={item.action}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.02 * index }}
-                    onClick={() => handleAction(item.action, item.url)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
-                      item.action === "logout" 
-                        ? "text-destructive hover:bg-destructive/10" 
-                        : "text-foreground hover:bg-accent/50"
-                    }`}
-                  >
-                    <span className="font-medium text-sm">{item.label}</span>
-                    <item.icon className={`w-5 h-5 transition-colors ${
-                      item.action === "logout"
-                        ? "text-destructive"
-                        : "text-muted-foreground group-hover:text-primary"
-                    }`} />
-                  </motion.button>
-                ))}
-              </div>
-
-              {/* Days Remaining */}
-              <div className="p-2 border-t border-border/50">
-                <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-primary text-primary-foreground font-medium text-sm">
-                  <Clock className="w-4 h-4" />
-                  <span>{daysRemaining} days remaining</span>
-                </div>
-              </div>
-
-              {/* User Avatar at bottom */}
-              <div className="p-3 border-t border-border/50 flex justify-center">
-                <UserAvatar
-                  firstName={firstName}
-                  lastName={lastName}
-                  imageSrc={imageSrc}
-                  size="lg"
+      {portalRoot &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setIsOpen(false)}
+                  className="fixed inset-0 z-50"
                 />
-              </div>
-            </motion.div>
-          </>
+
+                {/* Dropdown Menu */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98, y: -8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98, y: -8 }}
+                  transition={{ duration: 0.15, ease: "easeOut" }}
+                  style={{ top: menuPos?.top ?? 0, left: menuPos?.left ?? 0 }}
+                  className="fixed z-[60] w-56 bg-card border border-border/50 rounded-2xl shadow-lg overflow-hidden"
+                >
+                  {/* Menu Items */}
+                  <div className="p-2">
+                    {menuItems.map((item, index) => (
+                      <motion.button
+                        key={item.action}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.02 * index }}
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleAction(item.action, item.url);
+                        }}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
+                          item.action === "logout"
+                            ? "text-destructive hover:bg-destructive/10"
+                            : "text-foreground hover:bg-accent/50"
+                        }`}
+                      >
+                        <span className="font-medium text-sm">{item.label}</span>
+                        <item.icon
+                          className={`w-5 h-5 transition-colors ${
+                            item.action === "logout"
+                              ? "text-destructive"
+                              : "text-muted-foreground group-hover:text-primary"
+                          }`}
+                        />
+                      </motion.button>
+                    ))}
+                  </div>
+
+                  {/* Days Remaining */}
+                  <div className="p-2 border-t border-border/50">
+                    <div className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-primary text-primary-foreground font-medium text-sm">
+                      <Clock className="w-4 h-4" />
+                      <span>{daysRemaining} days remaining</span>
+                    </div>
+                  </div>
+
+                  {/* User Avatar at bottom */}
+                  <div className="p-3 border-t border-border/50 flex justify-center">
+                    <UserAvatar
+                      firstName={firstName}
+                      lastName={lastName}
+                      imageSrc={imageSrc}
+                      size="lg"
+                    />
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          portalRoot,
         )}
-      </AnimatePresence>
     </div>
   );
 }
