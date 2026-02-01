@@ -5,7 +5,6 @@ import {
   MessageSquare, 
   BookOpen, 
   FileText, 
-  Briefcase,
   ChevronRight,
   Sparkles
 } from "lucide-react";
@@ -20,33 +19,33 @@ interface OnboardingSlide {
   icon: React.ReactNode;
   title: string;
   description: string;
-  gradient: string;
+  accentColor: string;
 }
 
 const slides: OnboardingSlide[] = [
   {
-    icon: <Scale className="w-16 h-16" />,
+    icon: <Scale className="w-12 h-12" />,
     title: "Your AI Legal Assistant",
     description: "Get instant access to Pakistani law expertise powered by advanced AI. Navigate complex legal matters with confidence.",
-    gradient: "from-primary/20 via-primary/10 to-transparent",
+    accentColor: "primary",
   },
   {
-    icon: <MessageSquare className="w-16 h-16" />,
+    icon: <MessageSquare className="w-12 h-12" />,
     title: "Chat with AI Attorney",
     description: "Ask legal questions in plain language and receive accurate, context-aware responses tailored to Pakistani law.",
-    gradient: "from-blue-500/20 via-blue-500/10 to-transparent",
+    accentColor: "primary",
   },
   {
-    icon: <BookOpen className="w-16 h-16" />,
+    icon: <BookOpen className="w-12 h-12" />,
     title: "Comprehensive Legal Library",
     description: "Access Pakistan's Constitution, PPC, CrPC, and thousands of case laws. Search and reference legal provisions instantly.",
-    gradient: "from-amber-500/20 via-amber-500/10 to-transparent",
+    accentColor: "primary",
   },
   {
-    icon: <FileText className="w-16 h-16" />,
+    icon: <FileText className="w-12 h-12" />,
     title: "Smart Document Drafting",
     description: "Generate professional legal documents, contracts, and applications with AI assistance. Save hours of manual work.",
-    gradient: "from-emerald-500/20 via-emerald-500/10 to-transparent",
+    accentColor: "primary",
   },
 ];
 
@@ -54,7 +53,7 @@ const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
     opacity: 0,
-    scale: 0.9,
+    scale: 0.95,
   }),
   center: {
     x: 0,
@@ -64,27 +63,7 @@ const slideVariants = {
   exit: (direction: number) => ({
     x: direction < 0 ? 300 : -300,
     opacity: 0,
-    scale: 0.9,
-  }),
-};
-
-const iconVariants = {
-  initial: { scale: 0, rotate: -180 },
-  animate: { 
-    scale: 1, 
-    rotate: 0,
-  },
-};
-
-const textVariants = {
-  initial: { opacity: 0, y: 20 },
-  animate: (delay: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      delay,
-    },
+    scale: 0.95,
   }),
 };
 
@@ -119,21 +98,27 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
   const isLastSlide = currentSlide === slides.length - 1;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col overflow-hidden relative">
+      {/* Background gradient effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none" />
+      
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50" />
+
       {/* Skip Button */}
       <div className="absolute top-4 right-4 z-20">
         <Button
           variant="ghost"
           size="sm"
           onClick={handleSkip}
-          className="text-muted-foreground hover:text-foreground"
+          className="text-muted-foreground hover:text-foreground hover:bg-secondary/50"
         >
           Skip
         </Button>
       </div>
 
       {/* Slide Content */}
-      <div className="flex-1 flex flex-col items-center justify-center px-8 pt-16">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-8">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentSlide}
@@ -149,47 +134,40 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
             }}
             className="flex flex-col items-center text-center max-w-sm"
           >
-            {/* Animated Background Gradient */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className={`absolute inset-0 bg-gradient-to-b ${currentSlideData.gradient} pointer-events-none`}
-            />
-
-            {/* Icon Container */}
+            {/* Icon Container with Glassmorphism */}
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-              className="relative mb-8"
+              className="relative mb-10"
             >
-              <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center">
-                <motion.div
-                  animate={{
-                    boxShadow: [
-                      "0 0 0 0 rgba(14, 138, 107, 0.4)",
-                      "0 0 0 20px rgba(14, 138, 107, 0)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    repeatDelay: 0.5,
-                  }}
-                  className="w-24 h-24 rounded-full bg-primary/20 flex items-center justify-center"
-                >
-                  <div className="text-primary">
+              {/* Outer glow ring */}
+              <motion.div
+                animate={{
+                  boxShadow: [
+                    "0 0 0 0 hsl(var(--primary) / 0.3)",
+                    "0 0 0 20px hsl(var(--primary) / 0)",
+                  ],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatDelay: 0.5,
+                }}
+                className="w-28 h-28 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 backdrop-blur-sm border border-primary/20 flex items-center justify-center shadow-glow"
+              >
+                <div className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center">
+                  <div className="text-primary-foreground">
                     {currentSlideData.icon}
                   </div>
-                </motion.div>
-              </div>
+                </div>
+              </motion.div>
 
               {/* Sparkle decorations */}
               <motion.div
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5],
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 1, 0.4],
                 }}
                 transition={{
                   duration: 2,
@@ -197,42 +175,40 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
                 }}
                 className="absolute -top-2 -right-2"
               >
-                <Sparkles className="w-6 h-6 text-primary/60" />
+                <Sparkles className="w-5 h-5 text-primary" />
               </motion.div>
               <motion.div
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5],
+                  scale: [1, 1.3, 1],
+                  opacity: [0.4, 1, 0.4],
                 }}
                 transition={{
                   duration: 2,
                   repeat: Infinity,
-                  delay: 0.5,
+                  delay: 0.7,
                 }}
                 className="absolute -bottom-1 -left-3"
               >
-                <Sparkles className="w-4 h-4 text-primary/40" />
+                <Sparkles className="w-4 h-4 text-primary/60" />
               </motion.div>
             </motion.div>
 
             {/* Title */}
             <motion.h1
-              variants={textVariants}
-              initial="initial"
-              animate="animate"
-              custom={0.3}
-              className="text-2xl font-bold text-foreground mb-4 relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="text-2xl font-display font-bold text-foreground mb-4"
             >
               {currentSlideData.title}
             </motion.h1>
 
             {/* Description */}
             <motion.p
-              variants={textVariants}
-              initial="initial"
-              animate="animate"
-              custom={0.4}
-              className="text-muted-foreground leading-relaxed relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className="text-muted-foreground leading-relaxed"
             >
               {currentSlideData.description}
             </motion.p>
@@ -241,7 +217,7 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
       </div>
 
       {/* Bottom Section */}
-      <div className="px-8 pb-12 space-y-8">
+      <div className="px-6 pb-10 space-y-8">
         {/* Progress Dots */}
         <div className="flex justify-center gap-2">
           {slides.map((_, index) => (
@@ -250,8 +226,8 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
               onClick={() => handleDotClick(index)}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index === currentSlide
-                  ? "w-8 bg-primary"
-                  : "w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                  ? "w-8 bg-primary shadow-glow"
+                  : "w-2 bg-muted hover:bg-muted-foreground/50"
               }`}
               whileTap={{ scale: 0.9 }}
             />
@@ -264,9 +240,11 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Button
+          <motion.button
             onClick={handleNext}
-            className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-lg shadow-lg"
+            className="w-full btn-primary-gradient py-4 rounded-2xl font-semibold flex items-center justify-center gap-2"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <motion.span
               key={isLastSlide ? "start" : "next"}
@@ -276,7 +254,7 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
             >
               {isLastSlide ? (
                 <>
-                  <Briefcase className="w-5 h-5" />
+                  <Scale className="w-5 h-5" />
                   Get Started
                 </>
               ) : (
@@ -286,7 +264,21 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
                 </>
               )}
             </motion.span>
-          </Button>
+          </motion.button>
+        </motion.div>
+
+        {/* Tagline */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="flex items-center justify-center gap-2 text-muted-foreground text-xs"
+        >
+          <span>INSTANT</span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
+          <span>ACCURATE</span>
+          <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
+          <span>SECURE</span>
         </motion.div>
       </div>
     </div>
