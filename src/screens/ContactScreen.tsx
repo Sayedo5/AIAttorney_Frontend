@@ -72,6 +72,65 @@ const faqData = [
     question: "Is my data and conversation secure?",
     answer: "Yes, we use industry-standard encryption and security measures to protect your data. Your conversations are private and confidential."
   },
+  // Subscription FAQs
+  {
+    question: "What subscription plans are available?",
+    answer: "We offer a Premium subscription at PKR 2,999/month which includes unlimited AI queries, full access to Case Diary, priority support, and advanced document drafting features. A free tier with limited daily queries is also available."
+  },
+  {
+    question: "How do I upgrade to Premium?",
+    answer: "You can upgrade to Premium by tapping on any premium feature or visiting the Pricing section from Settings. Select your preferred plan and complete the payment process."
+  },
+  {
+    question: "Can I cancel my subscription anytime?",
+    answer: "Yes, you can cancel your subscription at any time from your account settings. Your access will continue until the end of your current billing period, and you won't be charged again."
+  },
+  {
+    question: "Is there a free trial available?",
+    answer: "Yes! New users get access to limited free queries daily. This allows you to experience AI Attorney before committing to a Premium subscription."
+  },
+  {
+    question: "What happens if I exceed my free query limit?",
+    answer: "Once you've used your daily free queries, you'll be prompted to upgrade to Premium for unlimited access. Your query count resets at midnight each day."
+  },
+  // Payment FAQs
+  {
+    question: "What payment methods do you accept?",
+    answer: "We accept all major credit and debit cards (Visa, Mastercard), JazzCash, EasyPaisa, and bank transfers. All payments are processed securely through encrypted channels."
+  },
+  {
+    question: "Is my payment information secure?",
+    answer: "Absolutely. We use industry-standard SSL encryption and never store your complete card details on our servers. All payment processing is handled by certified payment providers."
+  },
+  {
+    question: "Will I get a receipt for my payment?",
+    answer: "Yes, a detailed receipt is sent to your registered email address immediately after each successful payment. You can also view your payment history in the app settings."
+  },
+  {
+    question: "What is your refund policy?",
+    answer: "We offer a 7-day money-back guarantee for first-time subscribers. If you're not satisfied, contact our support team within 7 days of your first payment for a full refund."
+  },
+  // Privacy Policy FAQs
+  {
+    question: "What data do you collect from users?",
+    answer: "We collect only essential data: your email, name, and usage analytics to improve our service. Your legal queries are processed but not permanently stored unless you save them to your history."
+  },
+  {
+    question: "Do you share my data with third parties?",
+    answer: "No, we do not sell or share your personal data with third parties. Your information is used solely to provide and improve our services. We may use anonymized, aggregated data for analytics."
+  },
+  {
+    question: "How long do you retain my data?",
+    answer: "Account data is retained while your account is active. Chat history is stored for 90 days unless you delete it earlier. Upon account deletion, all personal data is permanently removed within 30 days."
+  },
+  {
+    question: "Can I delete my account and data?",
+    answer: "Yes, you can request complete account deletion from Settings > Account > Delete Account. This will permanently remove all your personal data, chat history, and saved documents from our systems."
+  },
+  {
+    question: "Where can I read the full Privacy Policy?",
+    answer: "Our complete Privacy Policy is available in the app under Settings > Legal > Privacy Policy. It details all data collection, usage, and protection practices in compliance with applicable laws."
+  },
 ];
 
 const officeInfo = [
