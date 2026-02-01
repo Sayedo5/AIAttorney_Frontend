@@ -10,7 +10,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Bell,
-  BellRing
+  BellRing,
+  Settings
 } from "lucide-react";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
@@ -20,6 +21,7 @@ import { toast } from "sonner";
 
 interface CasesScreenProps {
   onSettingsClick?: () => void;
+  onRemindersClick?: () => void;
 }
 
 const filterOptions = [
@@ -88,7 +90,7 @@ const upcomingHearings = [
   { day: "This Week", count: 5 },
 ];
 
-export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
+export function CasesScreen({ onSettingsClick, onRemindersClick }: CasesScreenProps) {
   const [activeFilter, setActiveFilter] = useState("all");
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedCaseTitle, setSelectedCaseTitle] = useState("");
@@ -166,6 +168,26 @@ export function CasesScreen({ onSettingsClick }: CasesScreenProps) {
         title="Cases Diary" 
         onSettingsClick={onSettingsClick}
         notificationCount={upcomingCount}
+        rightAction={
+          <div className="flex items-center gap-2">
+            {onRemindersClick && (
+              <button
+                onClick={onRemindersClick}
+                className="p-2 rounded-full hover:bg-secondary transition-colors relative"
+                aria-label="View reminders"
+              >
+                <Bell className="w-5 h-5 text-foreground" />
+              </button>
+            )}
+            <button
+              onClick={onSettingsClick}
+              className="p-2 rounded-full hover:bg-secondary transition-colors"
+              aria-label="Settings"
+            >
+              <Settings className="w-5 h-5 text-foreground" />
+            </button>
+          </div>
+        }
       />
 
       {/* Quick Stats */}
