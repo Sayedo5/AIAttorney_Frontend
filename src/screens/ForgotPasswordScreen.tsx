@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Mail, CheckCircle, ArrowRight } from "lucide-react";
+import { ArrowLeft, Mail, CheckCircle, ArrowRight, Scale } from "lucide-react";
 import { z } from "zod";
 
 const emailSchema = z.string().trim().email({ message: "Please enter a valid email address" });
@@ -25,44 +25,45 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
     }
 
     setIsLoading(true);
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     setIsSubmitted(true);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-subtle flex flex-col">
-      {/* Header */}
+    <div className="min-h-screen bg-background flex flex-col">
+      {/* Header with gradient */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-4 px-4 pt-12 pb-6"
+        className="w-full bg-gradient-to-br from-primary to-primary-glow px-6 py-6"
       >
-        <button
-          onClick={onBack}
-          className="w-10 h-10 rounded-full bg-card flex items-center justify-center shadow-sm hover:bg-secondary transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-foreground" />
-        </button>
-        <h1 className="text-xl font-display font-semibold">Reset Password</h1>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={onBack}
+            className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center"
+          >
+            <ArrowLeft className="w-5 h-5 text-primary-foreground" />
+          </button>
+          <h1 className="text-lg font-display font-semibold text-primary-foreground">Reset Password</h1>
+        </div>
       </motion.div>
 
       <AnimatePresence mode="wait">
         {!isSubmitted ? (
           <motion.div
             key="form"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="flex-1 flex flex-col px-6"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="flex-1 flex flex-col px-6 py-8"
           >
             {/* Icon */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
-              className="w-20 h-20 rounded-3xl bg-gradient-primary flex items-center justify-center shadow-glow mx-auto mb-6 mt-8"
+              className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-lg shadow-primary/25 mx-auto mb-6"
             >
               <Mail className="w-10 h-10 text-primary-foreground" />
             </motion.div>
@@ -71,7 +72,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-2xl font-display font-bold text-foreground text-center mb-2"
+              className="text-xl font-display font-bold text-foreground text-center mb-2"
             >
               Forgot your password?
             </motion.h2>
@@ -80,7 +81,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-muted-foreground text-center mb-8 max-w-xs mx-auto"
+              className="text-muted-foreground text-sm text-center mb-8 max-w-xs mx-auto"
             >
               No worries! Enter your email and we'll send you a link to reset your password.
             </motion.p>
@@ -102,7 +103,9 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
                     setError("");
                   }}
                   placeholder="Enter your email address"
-                  className={`input-modern pl-12 ${error ? "border-destructive ring-1 ring-destructive" : ""}`}
+                  className={`w-full px-4 py-3 pl-12 rounded-xl bg-secondary border transition-colors text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary ${
+                    error ? "border-destructive ring-1 ring-destructive" : "border-border"
+                  }`}
                 />
               </div>
               
@@ -110,7 +113,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-sm text-destructive px-1"
+                  className="text-xs text-destructive px-1"
                 >
                   {error}
                 </motion.p>
@@ -119,8 +122,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               <motion.button
                 onClick={handleSubmit}
                 disabled={isLoading || !email}
-                className="w-full btn-primary-gradient py-4 rounded-2xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: isLoading ? 1 : 1.02 }}
+                className="w-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
                 whileTap={{ scale: isLoading ? 1 : 0.98 }}
               >
                 {isLoading ? (
@@ -150,14 +152,14 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-              className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center mb-6"
+              className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6"
             >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 300, delay: 0.3 }}
               >
-                <CheckCircle className="w-12 h-12 text-primary" />
+                <CheckCircle className="w-10 h-10 text-primary" />
               </motion.div>
             </motion.div>
 
@@ -165,7 +167,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-2xl font-display font-bold text-foreground text-center mb-2"
+              className="text-xl font-display font-bold text-foreground text-center mb-2"
             >
               Check your email
             </motion.h2>
@@ -174,7 +176,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="text-muted-foreground text-center mb-2 max-w-xs"
+              className="text-muted-foreground text-sm text-center mb-2"
             >
               We've sent a password reset link to
             </motion.p>
@@ -196,8 +198,7 @@ export function ForgotPasswordScreen({ onBack }: ForgotPasswordScreenProps) {
             >
               <motion.button
                 onClick={onBack}
-                className="w-full btn-primary-gradient py-4 rounded-2xl font-semibold flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02 }}
+                className="w-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg shadow-primary/25"
                 whileTap={{ scale: 0.98 }}
               >
                 Back to Login

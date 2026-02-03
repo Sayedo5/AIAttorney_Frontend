@@ -83,7 +83,7 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
   const [activeType, setActiveType] = useState("all");
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-20">
       <Header 
         title="Documents" 
         onSettingsClick={onSettingsClick}
@@ -94,9 +94,9 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-4 pt-4"
+        className="px-3 pt-3"
       >
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2">
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
@@ -105,15 +105,15 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.05 * index }}
-                className="flex flex-col items-center gap-2 p-4 rounded-2xl bg-card border border-border/50 hover:shadow-md transition-all"
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl bg-card border border-border/50 hover:shadow-md transition-all"
                 whileTap={{ scale: 0.95 }}
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-primary flex items-center justify-center">
-                  <Icon className="w-6 h-6 text-primary-foreground" />
+                <div className="w-10 h-10 rounded-lg bg-gradient-primary flex items-center justify-center">
+                  <Icon className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div className="text-center">
-                  <p className="font-semibold text-sm">{action.label}</p>
-                  <p className="text-xs text-muted-foreground">{action.description}</p>
+                  <p className="font-semibold text-xs">{action.label}</p>
+                  <p className="text-[10px] text-muted-foreground">{action.description}</p>
                 </div>
               </motion.button>
             );
@@ -126,14 +126,14 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="px-4 pt-6"
+        className="px-3 pt-4"
       >
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             placeholder="Search documents..."
-            className="input-modern pl-12"
+            className="w-full px-3 py-2.5 pl-10 rounded-xl bg-secondary border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </motion.div>
@@ -143,14 +143,14 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.15 }}
-        className="px-4 pt-4"
+        className="px-3 pt-3"
       >
-        <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
           {documentTypes.map((type) => (
             <button
               key={type.id}
               onClick={() => setActiveType(type.id)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                 activeType === type.id
                   ? "bg-primary text-primary-foreground"
                   : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -167,11 +167,11 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="px-4 pt-4 space-y-3"
+        className="px-3 pt-3 space-y-2"
       >
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Recent Documents</h3>
-          <button className="text-sm text-primary hover:text-primary-glow transition-colors">
+          <h3 className="text-xs font-medium text-muted-foreground">Recent Documents</h3>
+          <button className="text-xs text-primary hover:text-primary-glow transition-colors">
             View all
           </button>
         </div>
@@ -184,21 +184,21 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * index }}
-              className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border/50 hover:shadow-md transition-all cursor-pointer"
+              className="flex items-center gap-2.5 p-3 rounded-xl bg-card border border-border/50 hover:shadow-md transition-all cursor-pointer"
             >
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                 doc.status === "completed" ? "bg-green-100 dark:bg-green-900/30" : "bg-accent"
               }`}>
-                <Icon className={`w-6 h-6 ${
+                <Icon className={`w-5 h-5 ${
                   doc.status === "completed" ? "text-green-600 dark:text-green-400" : "text-primary"
                 }`} />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-foreground line-clamp-1">{doc.title}</h3>
-                <div className="flex items-center gap-2 mt-0.5">
-                  <span className="text-xs text-primary font-medium">{doc.type}</span>
-                  <span className="text-xs text-muted-foreground">•</span>
-                  <span className="text-xs text-muted-foreground">{doc.date}</span>
+                <h3 className="font-semibold text-sm text-foreground line-clamp-1">{doc.title}</h3>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-[10px] text-primary font-medium">{doc.type}</span>
+                  <span className="text-[10px] text-muted-foreground">•</span>
+                  <span className="text-[10px] text-muted-foreground">{doc.date}</span>
                 </div>
               </div>
               <IconButton
