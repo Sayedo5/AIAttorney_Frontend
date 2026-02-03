@@ -46,7 +46,7 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
   const lastName = nameParts.slice(1).join(" ") || "";
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-20">
       <Header 
         transparent 
         onSettingsClick={onSettingsClick}
@@ -64,10 +64,10 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-6 pt-16 pb-6"
+        className="px-4 pt-14 pb-4"
       >
         <p className="text-muted-foreground text-sm">{greeting},</p>
-        <h1 className="text-2xl font-display font-bold text-foreground">
+        <h1 className="text-xl font-display font-bold text-foreground">
           {userName}
         </h1>
         
@@ -76,19 +76,19 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="mt-6"
+          className="mt-4"
         >
           <div 
             onClick={() => onNavigate("chat")}
-            className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border cursor-pointer hover:border-primary/50 transition-colors"
+            className="flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border cursor-pointer hover:border-primary/50 transition-colors"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center">
-              <Scale className="w-5 h-5 text-primary-foreground" />
+            <div className="w-9 h-9 rounded-lg bg-gradient-primary flex items-center justify-center">
+              <Scale className="w-4 h-4 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <p className="text-muted-foreground">Ask AI Attorney anything...</p>
+              <p className="text-muted-foreground text-sm">Ask AI Attorney anything...</p>
             </div>
-            <Search className="w-5 h-5 text-muted-foreground" />
+            <Search className="w-4 h-4 text-muted-foreground" />
           </div>
         </motion.div>
       </motion.div>
@@ -98,13 +98,13 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="px-6 mb-6"
+        className="px-4 mb-4"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-display font-semibold text-foreground">Quick Actions</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-display font-semibold text-foreground">Quick Actions</h2>
         </div>
         
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {quickActions.map((action, index) => (
             <motion.div
               key={action.title}
@@ -128,11 +128,11 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="px-6 mb-6"
+        className="px-4 mb-4"
       >
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-3">
           <TrendingUp className="w-4 h-4 text-primary" />
-          <h2 className="text-lg font-display font-semibold text-foreground">Try asking</h2>
+          <h2 className="text-base font-display font-semibold text-foreground">Try asking</h2>
         </div>
         
         <div className="space-y-2">
@@ -143,10 +143,10 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.35 + 0.05 * index }}
               onClick={() => onNavigate("chat")}
-              className="w-full flex items-center justify-between p-4 rounded-2xl bg-card border border-border hover:border-primary/50 transition-colors text-left group"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-card border border-border hover:border-primary/50 transition-colors text-left group"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-primary" />
+              <div className="flex items-center gap-2.5">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                 <span className="text-sm text-foreground">{suggestion}</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
@@ -160,19 +160,19 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="px-6"
+        className="px-4"
       >
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-display font-semibold text-foreground">Recent Activity</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-display font-semibold text-foreground">Recent Activity</h2>
           <button 
             onClick={() => onNavigate("chat")}
-            className="text-sm text-primary hover:text-primary-glow transition-colors"
+            className="text-xs text-primary hover:text-primary-glow transition-colors"
           >
             View all
           </button>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-2">
           {[
             { title: "Contract Review", time: "2 hours ago", icon: FileText },
             { title: "Property Law Query", time: "Yesterday", icon: MessageCircle },
@@ -183,13 +183,13 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 + 0.05 * index }}
-              className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all cursor-pointer"
+              className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border hover:border-primary/30 transition-all cursor-pointer"
             >
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <item.icon className="w-5 h-5 text-primary" />
+              <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                <item.icon className="w-4 h-4 text-primary" />
               </div>
               <div className="flex-1">
-                <p className="font-medium text-foreground">{item.title}</p>
+                <p className="font-medium text-sm text-foreground">{item.title}</p>
                 <p className="text-xs text-muted-foreground">{item.time}</p>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />

@@ -94,38 +94,35 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
       {/* Chat Area */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar pb-24"
+        className="flex-1 overflow-y-auto px-3 py-3 space-y-3 custom-scrollbar pb-20"
       >
         {messages.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-start pt-16 h-full text-center px-4"
+            className="flex flex-col items-center justify-start pt-8 h-full text-center px-2"
           >
-            {/* Welcome Card - AI Lawyer Style */}
+            {/* Welcome Card - Compact for mobile */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-sm bg-primary rounded-3xl p-6 mb-6 shadow-lg"
+              className="w-full max-w-xs bg-primary rounded-2xl p-5 mb-5 shadow-lg"
             >
               {/* Avatar */}
               <motion.div
-                animate={{ y: [0, -5, 0] }}
+                animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="w-24 h-24 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"
+                className="w-16 h-16 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"
               >
-                <div className="w-20 h-20 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full flex items-center justify-center relative overflow-hidden">
-                  {/* Simplified avatar face */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Scale className="w-10 h-10 text-primary" />
-                  </div>
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full flex items-center justify-center">
+                  <Scale className="w-7 h-7 text-primary" />
                 </div>
               </motion.div>
 
-              <h2 className="text-xl font-display font-bold text-primary-foreground mb-1">
+              <h2 className="text-lg font-display font-bold text-primary-foreground mb-1">
                 Welcome to AI Attorney
               </h2>
-              <p className="text-primary-foreground/80 text-sm">
+              <p className="text-primary-foreground/80 text-xs">
                 Powered by Latest AI Technology
               </p>
             </motion.div>
@@ -135,13 +132,10 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-center mb-6"
+              className="text-center mb-4"
             >
               <p className="text-muted-foreground text-sm">
                 Start by typing your message below
-              </p>
-              <p className="text-muted-foreground/70 text-xs mt-2 italic">
-                E.g. Explain the legal implications of starting an e-commerce business
               </p>
             </motion.div>
 
@@ -154,11 +148,11 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + 0.1 * index }}
                   onClick={() => handleSend(prompt)}
-                  className="w-full p-4 rounded-2xl bg-card border border-border hover:border-primary/50 hover:bg-card-elevated transition-all text-left group"
+                  className="w-full p-3 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card-elevated transition-all text-left group"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                    <span className="text-sm text-foreground group-hover:text-primary transition-colors">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    <span className="text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
                       {prompt}
                     </span>
                   </div>
@@ -189,7 +183,7 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
       </div>
 
       {/* Input */}
-      <div className="pb-20">
+      <div className="pb-16">
         <ChatInput onSend={handleSend} disabled={isTyping} />
       </div>
     </div>

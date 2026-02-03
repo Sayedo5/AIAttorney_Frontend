@@ -219,54 +219,54 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
 
   // Main library view with sidebar categories
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-20">
       <Header title="Legal Library" onSettingsClick={onSettingsClick} onNotificationsClick={onNotificationsClick} />
 
       {/* Search */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="px-4 pt-4"
+        className="px-3 pt-3"
       >
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search cases, statutes, articles..."
-            className="input-modern pl-12"
+            placeholder="Search cases, statutes..."
+            className="w-full px-3 py-2.5 pl-10 rounded-xl bg-secondary border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
           />
         </div>
       </motion.div>
 
       {/* Collapsible Categories */}
-      <div className="px-4 pt-6 space-y-2">
+      <div className="px-3 pt-4 space-y-2">
         {libraryCategories.map((category, catIndex) => (
           <motion.div
             key={category.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 * catIndex }}
-            className="rounded-2xl bg-card border border-border/50 overflow-hidden"
+            className="rounded-xl bg-card border border-border/50 overflow-hidden"
           >
             {/* Category Header */}
             <button
               onClick={() => toggleCategory(category.id)}
-              className="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50 transition-colors"
+              className="w-full flex items-center justify-between p-3 text-left hover:bg-accent/50 transition-colors"
             >
-              <div className="flex items-center gap-3">
-                {category.id === "bookmarks" && <Bookmark className="w-5 h-5 text-primary" />}
-                {category.id === "cases" && <Scale className="w-5 h-5 text-primary" />}
-                {category.id === "acts" && <FileText className="w-5 h-5 text-primary" />}
-                {category.id === "codes" && <BookOpen className="w-5 h-5 text-primary" />}
-                <span className="font-semibold text-foreground">{category.label}</span>
+              <div className="flex items-center gap-2.5">
+                {category.id === "bookmarks" && <Bookmark className="w-4 h-4 text-primary" />}
+                {category.id === "cases" && <Scale className="w-4 h-4 text-primary" />}
+                {category.id === "acts" && <FileText className="w-4 h-4 text-primary" />}
+                {category.id === "codes" && <BookOpen className="w-4 h-4 text-primary" />}
+                <span className="font-semibold text-sm text-foreground">{category.label}</span>
               </div>
               <motion.div
                 animate={{ rotate: expandedCategories.includes(category.id) ? 180 : 0 }}
                 transition={{ duration: 0.2 }}
               >
-                <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
               </motion.div>
             </button>
 
@@ -280,7 +280,7 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
                 >
-                  <div className="px-4 pb-4 space-y-2">
+                  <div className="px-3 pb-3 space-y-1.5">
                     {category.items.map((item, itemIndex) => (
                       <motion.button
                         key={item.id}
@@ -288,7 +288,7 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.03 * itemIndex }}
                         onClick={() => handleItemClick(item)}
-                        className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left ${
+                        className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition-all text-left ${
                           selectedCategory === item.id
                             ? "bg-primary text-primary-foreground border-primary"
                             : "bg-background border-border/50 hover:border-primary/50 hover:bg-accent/30"
@@ -317,20 +317,20 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="px-4 pt-6"
+        className="px-3 pt-4"
       >
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-4 rounded-2xl bg-card border border-border/50 text-center">
-            <p className="text-2xl font-display font-bold text-primary">400K+</p>
-            <p className="text-xs text-muted-foreground mt-1">Case Laws</p>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
+            <p className="text-lg font-display font-bold text-primary">400K+</p>
+            <p className="text-xs text-muted-foreground">Cases</p>
           </div>
-          <div className="p-4 rounded-2xl bg-card border border-border/50 text-center">
-            <p className="text-2xl font-display font-bold text-primary">5K+</p>
-            <p className="text-xs text-muted-foreground mt-1">Statutes</p>
+          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
+            <p className="text-lg font-display font-bold text-primary">5K+</p>
+            <p className="text-xs text-muted-foreground">Statutes</p>
           </div>
-          <div className="p-4 rounded-2xl bg-card border border-border/50 text-center">
-            <p className="text-2xl font-display font-bold text-primary">50+</p>
-            <p className="text-xs text-muted-foreground mt-1">Acts</p>
+          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
+            <p className="text-lg font-display font-bold text-primary">50+</p>
+            <p className="text-xs text-muted-foreground">Acts</p>
           </div>
         </div>
       </motion.div>
