@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Scale, 
   MessageSquare, 
   BookOpen, 
   FileText, 
@@ -10,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useHaptics } from "@/hooks/useHaptics";
+import appIcon from "@/assets/app-icon.png";
 
 interface OnboardingScreenProps {
   onComplete: () => void;
@@ -24,7 +24,7 @@ interface OnboardingSlide {
 
 const slides: OnboardingSlide[] = [
   {
-    icon: <Scale className="w-12 h-12" />,
+    icon: <img src={appIcon} alt="AI Attorney" className="w-12 h-12 object-contain" />,
     title: "Your AI Legal Assistant",
     description: "Get instant access to Pakistani law expertise powered by advanced AI. Navigate complex legal matters with confidence.",
     accentColor: "primary",
@@ -254,7 +254,7 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
             >
               {isLastSlide ? (
                 <>
-                  <Scale className="w-5 h-5" />
+                  <img src={appIcon} alt="" className="w-5 h-5 object-contain" />
                   Get Started
                 </>
               ) : (

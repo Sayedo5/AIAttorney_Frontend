@@ -1,21 +1,22 @@
 import { motion } from "framer-motion";
-import { ArrowLeft, Scale, Shield, Zap, Users, Award, Globe } from "lucide-react";
+import { ArrowLeft, Shield, Zap, Users, Award, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useHaptics } from "@/hooks/useHaptics";
+import appIcon from "@/assets/app-icon.png";
 
 interface AboutScreenProps {
   onBack: () => void;
 }
 
 const stats = [
-  { label: "Case Laws", value: "400K+", icon: Scale },
+  { label: "Case Laws", value: "400K+", icon: () => <img src={appIcon} alt="" className="w-5 h-5" /> },
   { label: "Users", value: "10K+", icon: Users },
   { label: "Legal Documents", value: "50K+", icon: Award },
 ];
 
 const features = [
   {
-    icon: Scale,
+    icon: () => <img src={appIcon} alt="" className="w-5 h-5" />,
     title: "AI-Powered Legal Research",
     description: "Access 400K+ Pakistani case laws and statutes instantly with intelligent search.",
   },
@@ -73,8 +74,8 @@ export function AboutScreen({ onBack }: AboutScreenProps) {
           animate={{ opacity: 1, y: 0 }}
           className="text-center"
         >
-          <div className="w-20 h-20 rounded-3xl bg-gradient-primary flex items-center justify-center shadow-glow mx-auto mb-4">
-            <Scale className="w-10 h-10 text-primary-foreground" />
+          <div className="w-20 h-20 rounded-3xl bg-gradient-primary flex items-center justify-center shadow-glow mx-auto mb-4 overflow-hidden">
+            <img src={appIcon} alt="AI Attorney" className="w-12 h-12 object-contain" />
           </div>
           <h2 className="text-2xl font-display font-bold text-foreground mb-2">
             AI Attorney

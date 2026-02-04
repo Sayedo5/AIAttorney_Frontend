@@ -19,6 +19,7 @@ interface DocumentsScreenProps {
   onSettingsClick?: () => void;
   onSupport?: () => void;
   onNotificationsClick?: () => void;
+  onDrafterClick?: () => void;
 }
 
 const documentTypes = [
@@ -69,7 +70,7 @@ const quickActions = [
   { icon: Upload, label: "Upload", description: "Import file", color: "bg-primary" },
 ];
 
-export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsClick }: DocumentsScreenProps) {
+export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsClick, onDrafterClick }: DocumentsScreenProps) {
   const [activeType, setActiveType] = useState("all");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -103,6 +104,8 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
   const handleActionClick = (action: string) => {
     if (action === "Upload") {
       handleUploadClick();
+    } else if (action === "Draft" && onDrafterClick) {
+      onDrafterClick();
     } else {
       toast({
         title: action,

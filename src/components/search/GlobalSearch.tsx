@@ -7,13 +7,13 @@ import {
   TrendingUp, 
   MessageCircle, 
   FileText, 
-  Scale, 
   BookOpen,
   Mic,
   ArrowRight,
   Sparkles,
   Star,
-  Trash2
+  Trash2,
+  Gavel
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
@@ -58,7 +58,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 const typeIcons = {
   chat: MessageCircle,
   document: FileText,
-  case: Scale,
+  case: Gavel,
   library: BookOpen,
 };
 
@@ -89,7 +89,7 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
     { key: null, label: language === 'UR' ? 'سب' : 'All', icon: null },
     { key: 'chat', label: language === 'UR' ? 'چیٹس' : 'Chats', icon: MessageCircle, color: 'bg-blue-500' },
     { key: 'document', label: language === 'UR' ? 'دستاویزات' : 'Docs', icon: FileText, color: 'bg-orange-500' },
-    { key: 'case', label: language === 'UR' ? 'کیسز' : 'Cases', icon: Scale, color: 'bg-primary' },
+    { key: 'case', label: language === 'UR' ? 'کیسز' : 'Cases', icon: Gavel, color: 'bg-primary' },
     { key: 'library', label: language === 'UR' ? 'لائبریری' : 'Library', icon: BookOpen, color: 'bg-purple-500' },
   ];
   
@@ -123,7 +123,7 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
       priority: typePreferences.document
     },
     { 
-      icon: Scale, 
+      icon: Gavel, 
       label: language === 'UR' ? 'کیس تلاش کریں' : 'Search cases', 
       tab: 'case-research',
       color: 'bg-primary',
@@ -144,24 +144,24 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
 
   // Expanded mock data for fuzzy search demonstration
   const allSearchableItems: SearchResult[] = useMemo(() => language === 'UR' ? [
-    { id: '1', type: 'case', title: 'احمد بمقابلہ ریاست', subtitle: 'فوجداری مقدمہ - 2024', icon: Scale },
+    { id: '1', type: 'case', title: 'احمد بمقابلہ ریاست', subtitle: 'فوجداری مقدمہ - 2024', icon: Gavel },
     { id: '2', type: 'document', title: 'کرائے کا معاہدہ', subtitle: 'دستاویز ٹیمپلیٹ', icon: FileText },
     { id: '3', type: 'chat', title: 'جائیداد کے بارے میں سوال', subtitle: '2 گھنٹے پہلے', icon: MessageCircle },
     { id: '4', type: 'library', title: 'پاکستانی دستور', subtitle: 'قانونی حوالہ', icon: BookOpen },
-    { id: '5', type: 'case', title: 'خان بمقابلہ حکومت', subtitle: 'دیوانی مقدمہ - 2023', icon: Scale },
+    { id: '5', type: 'case', title: 'خان بمقابلہ حکومت', subtitle: 'دیوانی مقدمہ - 2023', icon: Gavel },
     { id: '6', type: 'document', title: 'وکیل نامہ', subtitle: 'قانونی دستاویز', icon: FileText },
     { id: '7', type: 'library', title: 'تعزیرات پاکستان', subtitle: 'فوجداری قانون', icon: BookOpen },
     { id: '8', type: 'chat', title: 'طلاق کے قوانین', subtitle: 'کل', icon: MessageCircle },
   ] : [
-    { id: '1', type: 'case', title: 'Ahmad vs State', subtitle: 'Criminal Case - 2024', icon: Scale },
+    { id: '1', type: 'case', title: 'Ahmad vs State', subtitle: 'Criminal Case - 2024', icon: Gavel },
     { id: '2', type: 'document', title: 'Rental Agreement', subtitle: 'Document Template', icon: FileText },
     { id: '3', type: 'chat', title: 'Property Law Query', subtitle: '2 hours ago', icon: MessageCircle },
     { id: '4', type: 'library', title: 'Pakistan Constitution', subtitle: 'Legal Reference', icon: BookOpen },
-    { id: '5', type: 'case', title: 'Khan vs Government', subtitle: 'Civil Case - 2023', icon: Scale },
+    { id: '5', type: 'case', title: 'Khan vs Government', subtitle: 'Civil Case - 2023', icon: Gavel },
     { id: '6', type: 'document', title: 'Power of Attorney', subtitle: 'Legal Document', icon: FileText },
     { id: '7', type: 'library', title: 'Pakistan Penal Code', subtitle: 'Criminal Law', icon: BookOpen },
     { id: '8', type: 'chat', title: 'Divorce Laws Discussion', subtitle: 'Yesterday', icon: MessageCircle },
-    { id: '9', type: 'case', title: 'Property Dispute Resolution', subtitle: 'Supreme Court - 2024', icon: Scale },
+    { id: '9', type: 'case', title: 'Property Dispute Resolution', subtitle: 'Supreme Court - 2024', icon: Gavel },
     { id: '10', type: 'document', title: 'Employment Contract', subtitle: 'HR Template', icon: FileText },
     { id: '11', type: 'library', title: 'Contract Act 1872', subtitle: 'Civil Law', icon: BookOpen },
     { id: '12', type: 'chat', title: 'Inheritance Rights Query', subtitle: '3 days ago', icon: MessageCircle },

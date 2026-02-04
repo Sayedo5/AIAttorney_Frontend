@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, History, Scale, FileText, Image, File, FileSpreadsheet } from "lucide-react";
+import { Plus, History, FileText, Image, File, FileSpreadsheet } from "lucide-react";
 import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useChatHistory, ChatMessage } from "@/hooks/useChatHistory";
+import appIcon from "@/assets/app-icon.png";
 
 interface Attachment {
   name: string;
@@ -258,8 +259,8 @@ export function ChatScreen({ onHistoryClick, conversationId, onConversationChang
                   transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                   className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center"
                 >
-                  <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
-                    <Scale className="w-6 h-6 text-primary-foreground" />
+                  <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center overflow-hidden">
+                    <img src={appIcon} alt="AI Attorney" className="w-8 h-8 object-contain" />
                   </div>
                 </motion.div>
 
