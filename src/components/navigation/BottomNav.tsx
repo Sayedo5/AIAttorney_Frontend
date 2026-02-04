@@ -1,23 +1,26 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { Home, MessageCircle, BookOpen, FileText, Calendar, User } from "lucide-react";
+import { motion } from "framer-motion";
+import { Home, MessageCircle, BookOpen, FileText, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface BottomNavProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
 }
 
-const navItems = [
-  { id: "home", icon: Home, label: "Home" },
-  { id: "chat", icon: MessageCircle, label: "Chat" },
-  { id: "library", icon: BookOpen, label: "Library" },
-  { id: "documents", icon: FileText, label: "Docs" },
-  { id: "cases", icon: Calendar, label: "Cases" },
-];
-
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
+  const { t, isRTL } = useLanguage();
+
+  const navItems = [
+    { id: "home", icon: Home, label: t('home') },
+    { id: "chat", icon: MessageCircle, label: t('chat') },
+    { id: "library", icon: BookOpen, label: t('library') },
+    { id: "documents", icon: FileText, label: t('documentsNav') },
+    { id: "cases", icon: Calendar, label: t('cases') },
+  ];
+
   return (
-    <nav className="bottom-nav">
+    <nav className="bottom-nav" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
