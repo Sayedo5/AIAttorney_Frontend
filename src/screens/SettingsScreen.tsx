@@ -70,18 +70,18 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
     newsletter: false,
   });
 
-  const handleThemeChange = async (newTheme: string) => {
-    await impact('light');
+  const handleThemeChange = (newTheme: string) => {
+    impact('light').catch(() => {}); // Fire and forget
     setTheme(newTheme);
   };
 
-  const handleToggle = async (key: keyof typeof notifications, checked: boolean) => {
-    await impact('light');
+  const handleToggle = (key: keyof typeof notifications, checked: boolean) => {
+    impact('light').catch(() => {}); // Fire and forget
     setNotifications({ ...notifications, [key]: checked });
   };
 
-  const handleReminderToggle = async (checked: boolean) => {
-    await impact('light');
+  const handleReminderToggle = (checked: boolean) => {
+    impact('light').catch(() => {}); // Fire and forget
     setRemindersEnabled(checked);
     toast({
       title: checked ? "Hearing Reminders Enabled" : "Hearing Reminders Disabled",
@@ -92,16 +92,16 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
   };
 
   const handleRegisterPushNotifications = async () => {
-    await impact('medium');
+    impact('medium').catch(() => {}); // Fire and forget
     const success = await register();
     if (success) {
-      await notification('success');
+      notification('success').catch(() => {}); // Fire and forget
       toast({
         title: "Push Notifications Enabled",
         description: "You'll now receive notifications on this device.",
       });
     } else {
-      await notification('error');
+      notification('error').catch(() => {}); // Fire and forget
       toast({
         title: "Permission Denied",
         description: "Please enable notifications in your device settings.",
@@ -110,13 +110,13 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
     }
   };
 
-  const handleBackWithHaptic = async () => {
-    await impact('light');
+  const handleBackWithHaptic = () => {
+    impact('light').catch(() => {}); // Fire and forget
     onBack();
   };
 
-  const handleEditProfileWithHaptic = async () => {
-    await impact('light');
+  const handleEditProfileWithHaptic = () => {
+    impact('light').catch(() => {}); // Fire and forget
     onEditProfile();
   };
 
