@@ -71,7 +71,7 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
           {userName}
         </h1>
         
-        {/* Search Bar */}
+        {/* Search Bar - Matching Chat Input Design */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -80,15 +80,30 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         >
           <div 
             onClick={() => onNavigate("chat")}
-            className="flex items-center gap-3 p-3.5 rounded-xl bg-card border border-border cursor-pointer hover:border-primary/50 transition-colors"
+            className="rounded-2xl border border-border bg-card shadow-sm cursor-pointer hover:border-primary/30 transition-colors overflow-hidden"
           >
-            <div className="w-9 h-9 rounded-lg bg-gradient-primary flex items-center justify-center">
-              <Scale className="w-4 h-4 text-primary-foreground" />
+            {/* Input Area */}
+            <div className="px-4 pt-3 pb-2">
+              <p className="text-muted-foreground text-sm">Ask AI Attorney...</p>
             </div>
-            <div className="flex-1">
-              <p className="text-muted-foreground text-sm">Ask AI Attorney anything...</p>
+            
+            {/* Bottom Actions Preview */}
+            <div className="flex items-center justify-between px-3 pb-2.5 pt-1">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-background">
+                <Search className="w-3.5 h-3.5 text-primary" />
+                <span className="text-xs font-medium text-foreground">Search</span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-full border border-border overflow-hidden">
+                  <span className="px-2 py-1 text-xs font-medium bg-primary text-primary-foreground">EN</span>
+                  <span className="px-2 py-1 text-xs font-medium bg-background text-muted-foreground">UR</span>
+                </div>
+                <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                  <Scale className="w-3.5 h-3.5 text-muted-foreground" />
+                </div>
+              </div>
             </div>
-            <Search className="w-4 h-4 text-muted-foreground" />
           </div>
         </motion.div>
       </motion.div>
