@@ -11,9 +11,12 @@ import {
   BookOpen,
   Mic,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Star,
+  Trash2
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
 
 interface SearchResult {
   id: string;
@@ -65,6 +68,12 @@ const typeColors = {
   library: 'bg-purple-500/10 text-purple-500',
 };
 
+const reasonLabels = {
+  frequent: { en: 'Frequently searched', ur: 'اکثر تلاش کیا گیا' },
+  recent: { en: 'Recent', ur: 'حالیہ' },
+  trending: { en: 'Trending', ur: 'مقبول' },
+};
+
 export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }: GlobalSearchProps) {
   const { t, isRTL, language } = useLanguage();
   const [query, setQuery] = useState("");
@@ -72,38 +81,51 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
   const [isListening, setIsListening] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Use persistent search history
+  const { 
+    addSearch, 
+    removeSearch, 
+    clearHistory, 
+    getRecentSearches, 
+    getPersonalizedRecommendations,
+    getTypePreferences 
+  } = useSearchHistory();
 
-  // Mock data - in real app, this would come from a search API
-  const recentSearches = language === 'UR' 
-    ? ['جائیداد کا قانون', 'طلاق کا طریقہ کار', 'کرائے کا معاہدہ']
-    : ['Property law', 'Divorce procedure', 'Rental agreement'];
+  const recentSearches = getRecentSearches(5);
+  const recommendations = getPersonalizedRecommendations(4);
+  const typePreferences = getTypePreferences();
 
   const quickActions = [
     { 
       icon: MessageCircle, 
       label: language === 'UR' ? 'نئی چیٹ شروع کریں' : 'Start a new chat', 
       tab: 'chat',
-      color: 'bg-blue-500'
+      color: 'bg-blue-500',
+      priority: typePreferences.chat
     },
     { 
       icon: FileText, 
       label: language === 'UR' ? 'دستاویز بنائیں' : 'Create document', 
       tab: 'documents',
-      color: 'bg-orange-500'
+      color: 'bg-orange-500',
+      priority: typePreferences.document
     },
     { 
       icon: Scale, 
       label: language === 'UR' ? 'کیس تلاش کریں' : 'Search cases', 
       tab: 'case-research',
-      color: 'bg-primary'
+      color: 'bg-primary',
+      priority: typePreferences.case
     },
     { 
       icon: BookOpen, 
       label: language === 'UR' ? 'لائبریری دیکھیں' : 'Browse library', 
       tab: 'library',
-      color: 'bg-purple-500'
+      color: 'bg-purple-500',
+      priority: typePreferences.library
     },
-  ];
+  ].sort((a, b) => b.priority - a.priority);
 
   const trendingTopics = language === 'UR'
     ? ['سپریم کورٹ کے فیصلے', 'فوجداری قانون', 'دیوانی دعویٰ', 'خاندانی قانون']
@@ -167,6 +189,8 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
   };
 
   const handleResultClick = (result: SearchResult) => {
+    // Save search to history
+    addSearch(query, result.type);
     onNavigate(result.type === 'case' ? 'case-research' : result.type === 'library' ? 'library' : result.type === 'document' ? 'documents' : 'chat', query);
     handleClose();
   };
@@ -314,27 +338,95 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
                       </div>
                     </div>
 
-                    {/* Recent Searches */}
-                    <div className="mb-4">
-                      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                        <Clock className="w-3.5 h-3.5" />
-                        {language === 'UR' ? 'حالیہ تلاش' : 'Recent Searches'}
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {recentSearches.map((term, index) => (
-                          <motion.button
-                            key={index}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.05 }}
-                            onClick={() => handleSearch(term)}
-                            className="px-3 py-1.5 rounded-full bg-secondary/50 hover:bg-secondary border border-border/50 text-xs text-foreground transition-colors"
-                          >
-                            {term}
-                          </motion.button>
-                        ))}
+                    {/* Personalized Recommendations */}
+                    {recommendations.length > 0 && (
+                      <div className="mb-4">
+                        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                          <Star className="w-3.5 h-3.5" />
+                          {language === 'UR' ? 'آپ کے لیے تجویز کردہ' : 'Recommended for You'}
+                        </h3>
+                        <div className="space-y-1">
+                          {recommendations.map((rec, index) => {
+                            const Icon = typeIcons[rec.type];
+                            return (
+                              <motion.button
+                                key={`${rec.query}-${index}`}
+                                initial={{ opacity: 0, x: isRTL ? 10 : -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                onClick={() => {
+                                  handleSearch(rec.query);
+                                  addSearch(rec.query, rec.type);
+                                }}
+                                className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-secondary/50 transition-colors text-left group"
+                              >
+                                <div className={`w-8 h-8 rounded-lg ${typeColors[rec.type]} flex items-center justify-center`}>
+                                  <Icon className="w-4 h-4" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-sm text-foreground block truncate">{rec.query}</span>
+                                  <span className="text-[10px] text-muted-foreground">
+                                    {language === 'UR' ? reasonLabels[rec.reason].ur : reasonLabels[rec.reason].en}
+                                  </span>
+                                </div>
+                                <ArrowRight className={`w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ${isRTL ? 'rotate-180' : ''}`} />
+                              </motion.button>
+                            );
+                          })}
+                        </div>
                       </div>
-                    </div>
+                    )}
+
+                    {/* Recent Searches */}
+                    {recentSearches.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                            <Clock className="w-3.5 h-3.5" />
+                            {language === 'UR' ? 'حالیہ تلاش' : 'Recent Searches'}
+                          </h3>
+                          <button
+                            onClick={clearHistory}
+                            className="text-[10px] text-muted-foreground hover:text-destructive transition-colors flex items-center gap-1"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                            {language === 'UR' ? 'صاف کریں' : 'Clear'}
+                          </button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {recentSearches.map((item, index) => (
+                            <motion.div
+                              key={item.id}
+                              initial={{ opacity: 0, y: 5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.05 }}
+                              className="group relative"
+                            >
+                              <button
+                                onClick={() => {
+                                  handleSearch(item.query);
+                                  addSearch(item.query, item.type);
+                                }}
+                                className="px-3 py-1.5 rounded-full bg-secondary/50 hover:bg-secondary border border-border/50 text-xs text-foreground transition-colors flex items-center gap-1.5"
+                              >
+                                {item.clickCount > 1 && (
+                                  <span className="w-4 h-4 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center">
+                                    {item.clickCount}
+                                  </span>
+                                )}
+                                {item.query}
+                              </button>
+                              <button
+                                onClick={() => removeSearch(item.id)}
+                                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-muted hover:bg-destructive/20 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center"
+                              >
+                                <X className="w-2.5 h-2.5" />
+                              </button>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Trending Topics */}
                     <div>
