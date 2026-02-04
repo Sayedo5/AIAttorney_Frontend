@@ -7,7 +7,6 @@ import {
   FileText, 
   ChevronRight, 
   ChevronDown,
-  Star, 
   ArrowLeft,
   Bookmark
 } from "lucide-react";
@@ -112,7 +111,6 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
   };
 
   const handleItemClick = (item: CategoryItem) => {
-    // Check if it's the "Saved Cases" bookmark item
     if (item.id === "bm1" && onBookmarkedCasesClick) {
       onBookmarkedCasesClick();
       return;
@@ -146,72 +144,93 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
             <span className="text-sm font-medium">Back</span>
           </motion.button>
 
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4 flex-wrap">
-            <span className="text-primary">Library</span>
-            <span>/</span>
-            <span className="text-primary">{selectedItem.label}</span>
-            <span>/</span>
-            <span className="text-foreground">Administration Department</span>
-          </div>
+          {/* Breadcrumb Section */}
+          <section className="mb-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap">
+              <span className="text-primary">Library</span>
+              <span>/</span>
+              <span className="text-primary">{selectedItem.label}</span>
+              <span>/</span>
+              <span className="text-foreground">Administration Department</span>
+            </div>
+          </section>
 
-          {/* Department Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-primary text-primary-foreground rounded-xl p-4 mb-6"
-          >
-            <h2 className="text-lg font-semibold">Administration Department</h2>
-          </motion.div>
-
-          {/* Search in this section */}
-          <div className="relative mb-4">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search in this section..."
-              className="input-modern pl-12"
-            />
-          </div>
-
-          {/* Documents List */}
-          <div className="space-y-3">
-            {sampleDocuments.map((doc, index) => (
-              <motion.div
-                key={doc.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05 * index }}
-                className="p-4 rounded-2xl bg-card border border-border/50 hover:border-primary/50 transition-all cursor-pointer"
-              >
-                <h3 className="font-medium text-foreground text-sm leading-relaxed line-clamp-2">
-                  {doc.title}
-                </h3>
-                <p className="text-xs text-muted-foreground mt-2">
-                  {doc.department} | {doc.year} | Promulgation Date: {doc.date}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex items-center justify-between mt-6">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 rounded-xl bg-primary text-primary-foreground font-medium text-sm"
+          {/* Department Header Section */}
+          <section className="mb-4">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-primary text-primary-foreground rounded-2xl p-4 shadow-sm"
             >
-              Previous
-            </motion.button>
-            <span className="text-sm text-muted-foreground">Page 1</span>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="px-6 py-2 rounded-xl bg-secondary text-secondary-foreground font-medium text-sm"
+              <h2 className="text-lg font-semibold">Administration Department</h2>
+            </motion.div>
+          </section>
+
+          {/* Search Section */}
+          <section className="mb-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-card rounded-2xl border border-border shadow-sm p-4"
             >
-              Next
-            </motion.button>
-          </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search in this section..."
+                  className="w-full px-4 py-3 pl-10 rounded-xl bg-secondary/50 border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all"
+                />
+              </div>
+            </motion.div>
+          </section>
+
+          {/* Documents List Section */}
+          <section>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-card rounded-2xl border border-border shadow-sm p-4"
+            >
+              <h3 className="text-sm font-semibold text-foreground mb-3">Documents</h3>
+              <div className="space-y-2">
+                {sampleDocuments.map((doc, index) => (
+                  <motion.div
+                    key={doc.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                    className="p-4 rounded-xl bg-secondary/30 hover:bg-secondary/50 border border-border/50 hover:border-primary/20 transition-all cursor-pointer"
+                  >
+                    <h4 className="font-medium text-foreground text-sm leading-relaxed line-clamp-2">
+                      {doc.title}
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-2">
+                      {doc.department} | {doc.year} | Promulgation Date: {doc.date}
+                    </p>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Pagination */}
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-medium text-sm"
+                >
+                  Previous
+                </motion.button>
+                <span className="text-sm text-muted-foreground">Page 1</span>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 rounded-xl bg-secondary text-secondary-foreground font-medium text-sm"
+                >
+                  Next
+                </motion.button>
+              </div>
+            </motion.div>
+          </section>
         </div>
       </div>
     );
@@ -222,118 +241,135 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
     <div className="min-h-screen bg-background pb-20">
       <Header title="Legal Library" onSettingsClick={onSettingsClick} onNotificationsClick={onNotificationsClick} />
 
-      {/* Search */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="px-3 pt-3"
-      >
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search cases, statutes..."
-            className="w-full px-3 py-2.5 pl-10 rounded-xl bg-secondary border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
-          />
-        </div>
-      </motion.div>
+      {/* Search Section */}
+      <section className="px-4 pt-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-card rounded-2xl border border-border shadow-sm p-4"
+        >
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search cases, statutes..."
+              className="w-full px-4 py-3 pl-10 rounded-xl bg-secondary/50 border border-border text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all"
+            />
+          </div>
+        </motion.div>
+      </section>
 
-      {/* Collapsible Categories */}
-      <div className="px-3 pt-4 space-y-2">
-        {libraryCategories.map((category, catIndex) => (
-          <motion.div
-            key={category.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 * catIndex }}
-            className="rounded-xl bg-card border border-border/50 overflow-hidden"
-          >
-            {/* Category Header */}
-            <button
-              onClick={() => toggleCategory(category.id)}
-              className="w-full flex items-center justify-between p-3 text-left hover:bg-accent/50 transition-colors"
-            >
-              <div className="flex items-center gap-2.5">
-                {category.id === "bookmarks" && <Bookmark className="w-4 h-4 text-primary" />}
-                {category.id === "cases" && <Scale className="w-4 h-4 text-primary" />}
-                {category.id === "acts" && <FileText className="w-4 h-4 text-primary" />}
-                {category.id === "codes" && <BookOpen className="w-4 h-4 text-primary" />}
-                <span className="font-semibold text-sm text-foreground">{category.label}</span>
-              </div>
-              <motion.div
-                animate={{ rotate: expandedCategories.includes(category.id) ? 180 : 0 }}
-                transition={{ duration: 0.2 }}
+      {/* Categories Section */}
+      <section className="px-4 pt-4">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
+        >
+          {libraryCategories.map((category, catIndex) => (
+            <div key={category.id} className={catIndex > 0 ? "border-t border-border" : ""}>
+              {/* Category Header */}
+              <button
+                onClick={() => toggleCategory(category.id)}
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-secondary/50 transition-colors"
               >
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
-              </motion.div>
-            </button>
-
-            {/* Category Items */}
-            <AnimatePresence>
-              {expandedCategories.includes(category.id) && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-3 pb-3 space-y-1.5">
-                    {category.items.map((item, itemIndex) => (
-                      <motion.button
-                        key={item.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.03 * itemIndex }}
-                        onClick={() => handleItemClick(item)}
-                        className={`w-full flex items-center justify-between p-2.5 rounded-lg border transition-all text-left ${
-                          selectedCategory === item.id
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-background border-border/50 hover:border-primary/50 hover:bg-accent/30"
-                        }`}
-                      >
-                        <span className={`font-medium text-sm ${
-                          selectedCategory === item.id ? "text-primary-foreground" : "text-foreground"
-                        }`}>
-                          {item.label}
-                        </span>
-                        <ChevronRight className={`w-4 h-4 ${
-                          selectedCategory === item.id ? "text-primary-foreground" : "text-muted-foreground"
-                        }`} />
-                      </motion.button>
-                    ))}
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    {category.id === "bookmarks" && <Bookmark className="w-4 h-4 text-primary" />}
+                    {category.id === "cases" && <Scale className="w-4 h-4 text-primary" />}
+                    {category.id === "acts" && <FileText className="w-4 h-4 text-primary" />}
+                    {category.id === "codes" && <BookOpen className="w-4 h-4 text-primary" />}
                   </div>
+                  <span className="font-semibold text-sm text-foreground">{category.label}</span>
+                </div>
+                <motion.div
+                  animate={{ rotate: expandedCategories.includes(category.id) ? 180 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
                 </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-      </div>
+              </button>
 
-      {/* Quick Stats */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="px-3 pt-4"
-      >
-        <div className="grid grid-cols-3 gap-2">
-          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
-            <p className="text-lg font-display font-bold text-primary">400K+</p>
-            <p className="text-xs text-muted-foreground">Cases</p>
+              {/* Category Items */}
+              <AnimatePresence>
+                {expandedCategories.includes(category.id) && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-4 pb-4 space-y-2">
+                      {category.items.map((item, itemIndex) => (
+                        <motion.button
+                          key={item.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.03 * itemIndex }}
+                          onClick={() => handleItemClick(item)}
+                          className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left ${
+                            selectedCategory === item.id
+                              ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                              : "bg-secondary/30 border-border/50 hover:border-primary/30 hover:bg-secondary/50"
+                          }`}
+                        >
+                          <div>
+                            <span className={`font-medium text-sm ${
+                              selectedCategory === item.id ? "text-primary-foreground" : "text-foreground"
+                            }`}>
+                              {item.label}
+                            </span>
+                            {item.description && (
+                              <p className={`text-xs mt-0.5 ${
+                                selectedCategory === item.id ? "text-primary-foreground/70" : "text-muted-foreground"
+                              }`}>
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                          <ChevronRight className={`w-4 h-4 ${
+                            selectedCategory === item.id ? "text-primary-foreground" : "text-muted-foreground"
+                          }`} />
+                        </motion.button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* Quick Stats Section */}
+      <section className="px-4 pt-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="bg-card rounded-2xl border border-border shadow-sm p-4"
+        >
+          <h3 className="text-sm font-semibold text-foreground mb-3">Library Statistics</h3>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="p-3 rounded-xl bg-secondary/30 border border-border/50 text-center">
+              <p className="text-xl font-display font-bold text-primary">400K+</p>
+              <p className="text-xs text-muted-foreground">Cases</p>
+            </div>
+            <div className="p-3 rounded-xl bg-secondary/30 border border-border/50 text-center">
+              <p className="text-xl font-display font-bold text-primary">5K+</p>
+              <p className="text-xs text-muted-foreground">Statutes</p>
+            </div>
+            <div className="p-3 rounded-xl bg-secondary/30 border border-border/50 text-center">
+              <p className="text-xl font-display font-bold text-primary">50+</p>
+              <p className="text-xs text-muted-foreground">Acts</p>
+            </div>
           </div>
-          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
-            <p className="text-lg font-display font-bold text-primary">5K+</p>
-            <p className="text-xs text-muted-foreground">Statutes</p>
-          </div>
-          <div className="p-3 rounded-xl bg-card border border-border/50 text-center">
-            <p className="text-lg font-display font-bold text-primary">50+</p>
-            <p className="text-xs text-muted-foreground">Acts</p>
-          </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </section>
     </div>
   );
 }
