@@ -72,24 +72,24 @@ export const OnboardingScreen = ({ onComplete }: OnboardingScreenProps) => {
   const [direction, setDirection] = useState(0);
   const { impact, notification } = useHaptics();
 
-  const handleNext = async () => {
-    await impact('light');
+  const handleNext = () => {
+    impact('light').catch(() => {}); // Fire and forget
     if (currentSlide < slides.length - 1) {
       setDirection(1);
       setCurrentSlide(currentSlide + 1);
     } else {
-      await notification('success');
+      notification('success').catch(() => {});
       onComplete();
     }
   };
 
-  const handleSkip = async () => {
-    await impact('light');
+  const handleSkip = () => {
+    impact('light').catch(() => {}); // Fire and forget
     onComplete();
   };
 
-  const handleDotClick = async (index: number) => {
-    await impact('light');
+  const handleDotClick = (index: number) => {
+    impact('light').catch(() => {}); // Fire and forget
     setDirection(index > currentSlide ? 1 : -1);
     setCurrentSlide(index);
   };
