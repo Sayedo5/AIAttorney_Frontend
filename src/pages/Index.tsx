@@ -8,6 +8,7 @@ import { HomeScreen } from "@/screens/HomeScreen";
 import { ChatScreen } from "@/screens/ChatScreen";
 import { LibraryScreen } from "@/screens/LibraryScreen";
 import { DocumentsScreen } from "@/screens/DocumentsScreen";
+import { DrafterScreen } from "@/screens/DrafterScreen";
 import { CasesScreen } from "@/screens/CasesScreen";
 import { ChatHistoryScreen } from "@/screens/ChatHistoryScreen";
 import { SettingsScreen } from "@/screens/SettingsScreen";
@@ -29,7 +30,7 @@ import { SearchResultsScreen } from "@/screens/SearchResultsScreen";
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password" | "terms";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms" | "search-results";
+type AppScreen = "home" | "chat" | "library" | "documents" | "drafter" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms" | "search-results";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -337,7 +338,8 @@ const Index = () => {
               />
             )}
             {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} />}
-            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} />}
+            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} onDrafterClick={() => handleNavigate("drafter")} />}
+            {activeTab === "drafter" && <DrafterScreen onBack={() => handleNavigate("documents")} onSettingsClick={handleSettingsClick} onNotificationsClick={handleRemindersClick} />}
             {activeTab === "cases" && <CasesScreen onSettingsClick={handleSettingsClick} onRemindersClick={handleRemindersClick} onSupport={handleContactClick} />}
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
             {activeTab === "about" && <AboutScreen onBack={handleBackFromAbout} />}

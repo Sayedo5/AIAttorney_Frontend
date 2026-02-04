@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Scale } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { z } from "zod";
+import appIcon from "@/assets/app-icon.png";
 
 const loginSchema = z.object({
   email: z.string().trim().min(1, "Email is required").email("Please enter a valid email"),
@@ -49,9 +50,9 @@ export function LoginScreen({ onLogin, onSignupClick, onForgotPasswordClick }: L
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4"
+          className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 overflow-hidden"
         >
-          <Scale className="w-8 h-8 text-primary-foreground" />
+          <img src={appIcon} alt="AI Attorney" className="w-12 h-12 object-contain" />
         </motion.div>
         <h1 className="text-2xl font-display font-bold text-primary-foreground">
           AI Attorney

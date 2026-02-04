@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, ArrowRight, Scale } from "lucide-react";
+import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import { z } from "zod";
+import appIcon from "@/assets/app-icon.png";
 
 const signupSchema = z.object({
   name: z.string().trim().min(1, "Full name is required").max(100, "Name must be less than 100 characters"),
@@ -65,9 +66,9 @@ export function SignupScreen({ onSignup, onLoginClick, onTermsClick }: SignupScr
         <motion.div
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3"
+          className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-3 overflow-hidden"
         >
-          <Scale className="w-7 h-7 text-primary-foreground" />
+          <img src={appIcon} alt="AI Attorney" className="w-10 h-10 object-contain" />
         </motion.div>
         <h1 className="text-xl font-display font-bold text-primary-foreground">
           AI Attorney

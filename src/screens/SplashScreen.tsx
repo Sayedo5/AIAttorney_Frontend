@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Scale, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
+import appIcon from "@/assets/app-icon.png";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -86,7 +87,7 @@ export const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps)
             className="w-28 h-28 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 backdrop-blur-sm border border-primary/30 flex items-center justify-center"
           >
             <motion.div 
-              className="w-20 h-20 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-glow"
+              className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-glow overflow-hidden"
               animate={{ 
                 scale: [1, 1.05, 1],
               }}
@@ -96,7 +97,7 @@ export const SplashScreen = ({ onComplete, duration = 2500 }: SplashScreenProps)
                 ease: "easeInOut",
               }}
             >
-              <Scale className="w-10 h-10 text-primary-foreground" />
+              <img src={appIcon} alt="AI Attorney" className="w-full h-full object-contain" />
             </motion.div>
           </motion.div>
 
