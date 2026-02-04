@@ -80,8 +80,18 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
   const [query, setQuery] = useState("");
   const [isFocused, setIsFocused] = useState(isExpanded);
   const [isListening, setIsListening] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Filter options
+  const filterOptions = [
+    { key: null, label: language === 'UR' ? 'سب' : 'All', icon: null },
+    { key: 'chat', label: language === 'UR' ? 'چیٹس' : 'Chats', icon: MessageCircle, color: 'bg-blue-500' },
+    { key: 'document', label: language === 'UR' ? 'دستاویزات' : 'Docs', icon: FileText, color: 'bg-orange-500' },
+    { key: 'case', label: language === 'UR' ? 'کیسز' : 'Cases', icon: Scale, color: 'bg-primary' },
+    { key: 'library', label: language === 'UR' ? 'لائبریری' : 'Library', icon: BookOpen, color: 'bg-purple-500' },
+  ];
   
   // Use persistent search history
   const { 
@@ -157,11 +167,16 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
     { id: '12', type: 'chat', title: 'Inheritance Rights Query', subtitle: '3 days ago', icon: MessageCircle },
   ], [language]);
 
-  // Use fuzzy search for results
+  // Use fuzzy search for results with filter
   const searchResults = useMemo(() => {
     if (!query.trim()) return [];
     
-    const fuzzyResults = fuzzySearch(allSearchableItems, query, {
+    // First filter by type if active
+    const itemsToSearch = activeFilter 
+      ? allSearchableItems.filter(item => item.type === activeFilter)
+      : allSearchableItems;
+    
+    const fuzzyResults = fuzzySearch(itemsToSearch, query, {
       threshold: 0.4,
       keys: ['title', 'subtitle']
     });
@@ -170,7 +185,7 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
       ...result.item,
       score: result.score
     }));
-  }, [query, allSearchableItems]);
+  }, [query, allSearchableItems, activeFilter]);
 
   useEffect(() => {
     if (isExpanded && inputRef.current) {
@@ -289,11 +304,41 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
               className="border-t border-border"
             >
               <div className="p-4 max-h-[60vh] overflow-y-auto">
+                {/* Filter Chips - Show when query exists */}
+                {query && (
+                  <div className="mb-4">
+                    <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+                      {filterOptions.map((filter) => {
+                        const isActive = activeFilter === filter.key;
+                        return (
+                          <button
+                            key={filter.key || 'all'}
+                            onClick={() => setActiveFilter(filter.key)}
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
+                              isActive
+                                ? 'bg-primary text-primary-foreground shadow-sm'
+                                : 'bg-secondary/70 text-secondary-foreground hover:bg-secondary'
+                            }`}
+                          >
+                            {filter.icon && (
+                              <filter.icon className="w-3.5 h-3.5" />
+                            )}
+                            {filter.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Search Results */}
                 {query && searchResults.length > 0 && (
                   <div className="mb-4">
-                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                      {language === 'UR' ? 'نتائج' : 'Results'}
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center justify-between">
+                      <span>{language === 'UR' ? 'نتائج' : 'Results'}</span>
+                      <span className="text-[10px] text-muted-foreground/70">
+                        {searchResults.length} {language === 'UR' ? 'ملے' : 'found'}
+                      </span>
                     </h3>
                     <div className="space-y-1">
                       {searchResults.map((result) => {
@@ -330,11 +375,24 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
                   <div className="text-center py-6">
                     <Search className="w-10 h-10 text-muted-foreground/50 mx-auto mb-2" />
                     <p className="text-sm text-muted-foreground">
-                      {language === 'UR' ? 'کوئی نتیجہ نہیں ملا' : 'No results found'}
+                      {activeFilter 
+                        ? (language === 'UR' 
+                            ? `"${filterOptions.find(f => f.key === activeFilter)?.label}" میں کوئی نتیجہ نہیں` 
+                            : `No results in "${filterOptions.find(f => f.key === activeFilter)?.label}"`)
+                        : (language === 'UR' ? 'کوئی نتیجہ نہیں ملا' : 'No results found')
+                      }
                     </p>
+                    {activeFilter && (
+                      <button
+                        onClick={() => setActiveFilter(null)}
+                        className="mt-2 text-xs text-primary hover:text-primary/80 font-medium"
+                      >
+                        {language === 'UR' ? 'سب دکھائیں' : 'Show all types'}
+                      </button>
+                    )}
                     <button
                       onClick={() => onNavigate('chat', query)}
-                      className="mt-3 text-sm text-primary hover:text-primary/80 font-medium"
+                      className="mt-3 text-sm text-primary hover:text-primary/80 font-medium block mx-auto"
                     >
                       {language === 'UR' ? 'AI سے پوچھیں' : 'Ask AI instead'}
                     </button>
