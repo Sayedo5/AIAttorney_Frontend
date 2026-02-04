@@ -5,13 +5,11 @@ import {
   Scale, 
   BookOpen, 
   ChevronRight,
-  TrendingUp,
-  Globe,
-  Mic,
-  Paperclip
+  TrendingUp
 } from "lucide-react";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { Header } from "@/components/navigation/Header";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HomeScreenProps {
@@ -82,40 +80,14 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         </motion.div>
       </section>
 
-      {/* Search Bar Section */}
-      <section className="px-4 pt-2 pb-4">
+      {/* Global Search Section */}
+      <section className="px-4 pt-2 pb-4 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          onClick={() => onNavigate("chat")}
-          className="bg-card rounded-2xl border-2 border-border shadow-sm cursor-pointer hover:border-primary/30 transition-all overflow-hidden"
         >
-          {/* Input Area */}
-          <div className="px-4 pt-3 pb-2">
-            <p className="text-muted-foreground text-sm">{t('askAIAttorney')}</p>
-          </div>
-          
-          {/* Bottom Actions Preview */}
-          <div className="flex items-center justify-between px-3 pb-3 pt-1">
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-secondary/50">
-              <Globe className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">{t('search')}</span>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-full flex items-center justify-center bg-secondary/50">
-                <Paperclip className="w-3.5 h-3.5 text-muted-foreground" />
-              </div>
-              <div className="flex items-center rounded-full border border-border overflow-hidden">
-                <span className={`px-2 py-1 text-xs font-medium ${language === 'EN' ? 'bg-primary text-primary-foreground' : 'bg-secondary/50 text-muted-foreground'}`}>EN</span>
-                <span className={`px-2 py-1 text-xs font-medium ${language === 'UR' ? 'bg-primary text-primary-foreground' : 'bg-secondary/50 text-muted-foreground'}`}>UR</span>
-              </div>
-              <div className="w-7 h-7 rounded-full flex items-center justify-center bg-secondary/50">
-                <Mic className="w-3.5 h-3.5 text-muted-foreground" />
-              </div>
-            </div>
-          </div>
+          <GlobalSearch onNavigate={onNavigate} />
         </motion.div>
       </section>
 
