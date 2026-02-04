@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'AI Attorney',
   webDir: 'dist',
   server: {
-    url: 'https://511c2107-c049-49ce-a871-3ebb967afe0e.lovableproject.com?forceHideBadge=true',
+    url: 'https://id-preview--511c2107-c049-49ce-a871-3ebb967afe0e.lovable.app?forceHideBadge=true',
     cleartext: true
   },
   ios: {
