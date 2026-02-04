@@ -3,11 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Send, Mic, Globe, Paperclip, X, FileText, Image, File, FileSpreadsheet } from "lucide-react";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ChatInputProps {
   onSend: (message: string, attachments?: File[]) => void;
   disabled?: boolean;
-  placeholder?: string;
 }
 
 const getFileIcon = (file: File) => {
@@ -36,11 +36,10 @@ const formatFileSize = (bytes: number) => {
 
 export function ChatInput({ 
   onSend, 
-  disabled, 
-  placeholder = "Ask AI Attorney..." 
+  disabled
 }: ChatInputProps) {
+  const { language, setLanguage, t, isRTL } = useLanguage();
   const [message, setMessage] = useState("");
-  const [language, setLanguage] = useState<"EN" | "UR">("EN");
   const [attachments, setAttachments] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -58,10 +57,10 @@ export function ChatInput({
     language: language === "EN" ? "en-US" : "ur-PK",
     onError: (error) => {
       toast({
-        title: "Voice Error",
+        title: t('voiceError'),
         description: error === "not-allowed" 
-          ? "Please allow microphone access" 
-          : "Voice recording failed",
+          ? t('allowMicrophone')
+          : t('voiceRecordingFailed'),
         variant: "destructive"
       });
     }
@@ -84,8 +83,6 @@ export function ChatInput({
 
   // Generate image previews
   useEffect(() => {
-    const newPreviews: { [key: number]: string } = {};
-    
     attachments.forEach((file, index) => {
       if (file.type.startsWith('image/')) {
         const reader = new FileReader();
@@ -98,10 +95,6 @@ export function ChatInput({
         reader.readAsDataURL(file);
       }
     });
-
-    return () => {
-      // Cleanup object URLs if needed
-    };
   }, [attachments]);
 
   const handleSubmit = () => {
@@ -124,8 +117,8 @@ export function ChatInput({
   const handleVoiceClick = () => {
     if (!isSupported) {
       toast({
-        title: "Not Supported",
-        description: "Voice recording is not supported in this browser",
+        title: t('notSupported'),
+        description: t('voiceNotSupported'),
         variant: "destructive"
       });
       return;
@@ -146,8 +139,8 @@ export function ChatInput({
     if (files.length > 0) {
       setAttachments(prev => [...prev, ...files]);
       toast({
-        title: "File Added",
-        description: `${files.length} file(s) attached`,
+        title: t('fileAdded'),
+        description: `${files.length} ${t('filesAttached')}`,
       });
     }
     e.target.value = "";
@@ -162,7 +155,7 @@ export function ChatInput({
     });
   };
 
-  const toggleLanguage = (lang: "EN" | "UR") => {
+  const toggleLanguageSelection = (lang: "EN" | "UR") => {
     setLanguage(lang);
     setRecordingLanguage(lang === "EN" ? "en-US" : "ur-PK");
   };
@@ -174,6 +167,7 @@ export function ChatInput({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="p-3 bg-background border-t border-border"
+      dir={isRTL ? 'rtl' : 'ltr'}
     >
       {/* Attachments Preview */}
       <AnimatePresence>
@@ -187,7 +181,7 @@ export function ChatInput({
             <div className="bg-card rounded-xl border border-border p-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-muted-foreground">
-                  {attachments.length} file{attachments.length > 1 ? 's' : ''} attached
+                  {attachments.length} {t('filesAttached')}
                 </span>
                 <button
                   onClick={() => {
@@ -196,7 +190,7 @@ export function ChatInput({
                   }}
                   className="text-xs text-destructive hover:text-destructive/80 transition-colors"
                 >
-                  Remove all
+                  {t('removeAll')}
                 </button>
               </div>
               
@@ -215,7 +209,6 @@ export function ChatInput({
                       className="relative group"
                     >
                       {isImage && preview ? (
-                        // Image preview
                         <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-secondary">
                           <img 
                             src={preview} 
@@ -235,7 +228,6 @@ export function ChatInput({
                           </div>
                         </div>
                       ) : (
-                        // File preview
                         <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg border border-border/50 group-hover:border-primary/30 transition-colors">
                           <div className={`w-10 h-10 rounded-lg ${getFileColor(file)} flex items-center justify-center flex-shrink-0`}>
                             <FileIcon className="w-5 h-5 text-white" />
@@ -270,10 +262,11 @@ export function ChatInput({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isRecording ? "Listening..." : placeholder}
+            placeholder={isRecording ? t('listening') : t('askAIAttorney')}
             disabled={disabled}
             rows={1}
             className="w-full bg-transparent text-foreground placeholder:text-muted-foreground text-sm resize-none outline-none min-h-[24px] max-h-24"
+            dir={isRTL ? 'rtl' : 'ltr'}
           />
         </div>
 
@@ -285,7 +278,7 @@ export function ChatInput({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-background hover:bg-secondary transition-colors"
           >
             <Globe className="w-4 h-4 text-primary" />
-            <span className="text-xs font-medium text-foreground">Search</span>
+            <span className="text-xs font-medium text-foreground">{t('search')}</span>
           </button>
 
           {/* Right Side Actions */}
@@ -315,7 +308,7 @@ export function ChatInput({
             <div className="flex items-center rounded-full border border-border overflow-hidden">
               <button
                 type="button"
-                onClick={() => toggleLanguage("EN")}
+                onClick={() => toggleLanguageSelection("EN")}
                 className={`px-2.5 py-1 text-xs font-medium transition-colors ${
                   language === "EN" 
                     ? "bg-primary text-primary-foreground" 
@@ -326,7 +319,7 @@ export function ChatInput({
               </button>
               <button
                 type="button"
-                onClick={() => toggleLanguage("UR")}
+                onClick={() => toggleLanguageSelection("UR")}
                 className={`px-2.5 py-1 text-xs font-medium transition-colors ${
                   language === "UR" 
                     ? "bg-primary text-primary-foreground" 
@@ -369,7 +362,7 @@ export function ChatInput({
 
       {/* Disclaimer Text */}
       <p className="text-[10px] text-muted-foreground text-center mt-2">
-        Authentic citations. Verify applicability. Avoid web searches for Pakistani cases.
+        {t('disclaimer')}
       </p>
     </motion.div>
   );

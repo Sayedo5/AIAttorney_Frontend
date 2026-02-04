@@ -4,7 +4,6 @@ import {
   FileText, 
   Scale, 
   BookOpen, 
-  Search,
   ChevronRight,
   TrendingUp,
   Globe,
@@ -13,6 +12,7 @@ import {
 } from "lucide-react";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { Header } from "@/components/navigation/Header";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HomeScreenProps {
   onNavigate: (tab: string) => void;
@@ -24,30 +24,38 @@ interface HomeScreenProps {
   onNotificationsClick?: () => void;
 }
 
-const quickActions = [
-  { icon: MessageCircle, title: "New Chat", description: "Start a legal conversation", tab: "chat" },
-  { icon: FileText, title: "Draft Docs", description: "Create legal documents", tab: "documents" },
-  { icon: Scale, title: "Case Research", description: "Search case law", tab: "case-research" },
-  { icon: BookOpen, title: "Cases Diary", description: "Manage your cases", tab: "cases" },
-];
-
-const suggestions = [
-  "How to file a civil suit in Pakistan?",
-  "What are tenant rights under Rent Act?",
-  "Draft a rental agreement",
-  "Explain Section 420 PPC",
-];
-
 export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick, onLogout, onFeedback, onSupport, onNotificationsClick }: HomeScreenProps) {
+  const { t, isRTL, language } = useLanguage();
+  
   const currentHour = new Date().getHours();
-  const greeting = currentHour < 12 ? "Good morning" : currentHour < 18 ? "Good afternoon" : "Good evening";
+  const greeting = currentHour < 12 ? t('goodMorning') : currentHour < 18 ? t('goodAfternoon') : t('goodEvening');
   
   const nameParts = userName.split(" ");
   const firstName = nameParts[0] || "User";
   const lastName = nameParts.slice(1).join(" ") || "";
 
+  const quickActions = [
+    { icon: MessageCircle, title: t('newChat'), description: t('startLegalConversation'), tab: "chat" },
+    { icon: FileText, title: t('draftDocs'), description: t('createLegalDocuments'), tab: "documents" },
+    { icon: Scale, title: t('caseResearch'), description: t('searchCaseLaw'), tab: "case-research" },
+    { icon: BookOpen, title: t('casesDiary'), description: t('manageYourCases'), tab: "cases" },
+  ];
+
+  const suggestions = [
+    t('suggestion1'),
+    t('suggestion2'),
+    t('suggestion3'),
+    t('suggestion4'),
+  ];
+
+  const recentActivity = [
+    { title: language === 'UR' ? 'معاہدے کا جائزہ' : 'Contract Review', time: language === 'UR' ? '2 گھنٹے پہلے' : '2 hours ago', icon: FileText },
+    { title: language === 'UR' ? 'جائیداد کے قانون کا سوال' : 'Property Law Query', time: language === 'UR' ? 'کل' : 'Yesterday', icon: MessageCircle },
+    { title: language === 'UR' ? 'کیس: احمد بمقابلہ ریاست' : 'Case: Ahmad vs State', time: language === 'UR' ? '2 دن پہلے' : '2 days ago', icon: Scale },
+  ];
+
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-20" dir={isRTL ? 'rtl' : 'ltr'}>
       <Header 
         transparent 
         onSettingsClick={onSettingsClick}
@@ -85,14 +93,14 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         >
           {/* Input Area */}
           <div className="px-4 pt-3 pb-2">
-            <p className="text-muted-foreground text-sm">Ask AI Attorney...</p>
+            <p className="text-muted-foreground text-sm">{t('askAIAttorney')}</p>
           </div>
           
           {/* Bottom Actions Preview */}
           <div className="flex items-center justify-between px-3 pb-3 pt-1">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-secondary/50">
               <Globe className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground">Search</span>
+              <span className="text-xs font-medium text-foreground">{t('search')}</span>
             </div>
             
             <div className="flex items-center gap-2">
@@ -100,8 +108,8 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
                 <Paperclip className="w-3.5 h-3.5 text-muted-foreground" />
               </div>
               <div className="flex items-center rounded-full border border-border overflow-hidden">
-                <span className="px-2 py-1 text-xs font-medium bg-primary text-primary-foreground">EN</span>
-                <span className="px-2 py-1 text-xs font-medium bg-secondary/50 text-muted-foreground">UR</span>
+                <span className={`px-2 py-1 text-xs font-medium ${language === 'EN' ? 'bg-primary text-primary-foreground' : 'bg-secondary/50 text-muted-foreground'}`}>EN</span>
+                <span className={`px-2 py-1 text-xs font-medium ${language === 'UR' ? 'bg-primary text-primary-foreground' : 'bg-secondary/50 text-muted-foreground'}`}>UR</span>
               </div>
               <div className="w-7 h-7 rounded-full flex items-center justify-center bg-secondary/50">
                 <Mic className="w-3.5 h-3.5 text-muted-foreground" />
@@ -119,12 +127,12 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
           transition={{ delay: 0.2 }}
           className="bg-card rounded-2xl border border-border shadow-sm p-4"
         >
-          <h2 className="text-sm font-display font-semibold text-foreground mb-3">Quick Actions</h2>
+          <h2 className="text-sm font-display font-semibold text-foreground mb-3">{t('quickActions')}</h2>
           
           <div className="grid grid-cols-2 gap-3">
             {quickActions.map((action, index) => (
               <motion.div
-                key={action.title}
+                key={action.tab}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 * index }}
@@ -151,24 +159,24 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
         >
           <div className="flex items-center gap-2 mb-3">
             <TrendingUp className="w-4 h-4 text-primary" />
-            <h2 className="text-sm font-display font-semibold text-foreground">Try asking</h2>
+            <h2 className="text-sm font-display font-semibold text-foreground">{t('tryAsking')}</h2>
           </div>
           
           <div className="space-y-2">
             {suggestions.map((suggestion, index) => (
               <motion.button
                 key={index}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: isRTL ? 20 : -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.35 + 0.05 * index }}
                 onClick={() => onNavigate("chat")}
                 className="w-full flex items-center justify-between p-3 rounded-xl bg-secondary/50 hover:bg-secondary border border-border/50 hover:border-primary/30 transition-all text-left group"
               >
                 <div className="flex items-center gap-2.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
                   <span className="text-sm text-foreground">{suggestion}</span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                <ChevronRight className={`w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors ${isRTL ? 'rotate-180' : ''}`} />
               </motion.button>
             ))}
           </div>
@@ -184,21 +192,17 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
           className="bg-card rounded-2xl border border-border shadow-sm p-4"
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-display font-semibold text-foreground">Recent Activity</h2>
+            <h2 className="text-sm font-display font-semibold text-foreground">{t('recentActivity')}</h2>
             <button 
               onClick={() => onNavigate("chat")}
               className="text-xs text-primary hover:text-primary/80 font-medium transition-colors"
             >
-              View all
+              {t('viewAll')}
             </button>
           </div>
           
           <div className="space-y-2">
-            {[
-              { title: "Contract Review", time: "2 hours ago", icon: FileText },
-              { title: "Property Law Query", time: "Yesterday", icon: MessageCircle },
-              { title: "Case: Ahmad vs State", time: "2 days ago", icon: Scale },
-            ].map((item, index) => (
+            {recentActivity.map((item, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 10 }}
@@ -213,7 +217,7 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
                   <p className="font-medium text-sm text-foreground">{item.title}</p>
                   <p className="text-xs text-muted-foreground">{item.time}</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                <ChevronRight className={`w-4 h-4 text-muted-foreground ${isRTL ? 'rotate-180' : ''}`} />
               </motion.div>
             ))}
           </div>

@@ -5,6 +5,7 @@ import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Attachment {
   name: string;
@@ -24,19 +25,6 @@ interface Message {
 interface ChatScreenProps {
   onHistoryClick?: () => void;
 }
-
-const sampleResponses = [
-  "Based on Pakistani law, I can help you understand this legal matter. The relevant provisions under the Contract Act 1872 state that...",
-  "According to the precedent set in PLD 2020 SC 456, the Supreme Court held that...",
-  "For your query regarding property law in Pakistan, Section 54 of the Transfer of Property Act applies here...",
-  "The procedure for filing a civil suit involves several steps. First, you need to file a plaint under Order VII of CPC...",
-];
-
-const quickPrompts = [
-  "Explain the legal implications of starting an e-commerce business",
-  "What regulations do I need to comply with?",
-  "Draft a basic rental agreement",
-];
 
 const getFileIcon = (type: string) => {
   if (type.startsWith('image/')) return Image;
@@ -61,9 +49,17 @@ const formatFileSize = (bytes: number) => {
 };
 
 export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
+  const { t, isRTL, getAIResponse, language } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Quick prompts with translations
+  const quickPrompts = [
+    { key: 'prompt1', text: t('prompt1') },
+    { key: 'prompt2', text: t('prompt2') },
+    { key: 'prompt3', text: t('prompt3') },
+  ];
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -108,12 +104,15 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
 
-    // Simulate AI response
+    // Simulate AI response in the current language
     setTimeout(() => {
       setIsTyping(false);
+      const baseResponse = getAIResponse();
       const responseText = attachments.length > 0 
-        ? `I've received your ${attachments.length} file(s). ${sampleResponses[Math.floor(Math.random() * sampleResponses.length)]}`
-        : sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
+        ? (language === 'UR' 
+            ? `میں نے آپ کی ${attachments.length} فائل(یں) وصول کر لی ہیں۔ ${baseResponse}`
+            : `I've received your ${attachments.length} file(s). ${baseResponse}`)
+        : baseResponse;
       
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -150,7 +149,6 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
                 className="overflow-hidden"
               >
                 {isImage && file.preview ? (
-                  // Image attachment with preview
                   <div className="relative rounded-xl overflow-hidden border border-border shadow-sm">
                     <img 
                       src={file.preview} 
@@ -163,7 +161,6 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
                     </div>
                   </div>
                 ) : (
-                  // File attachment
                   <div className={`flex items-center gap-3 p-3 rounded-xl border shadow-sm min-w-[180px] ${
                     isUser 
                       ? 'bg-primary/10 border-primary/20' 
@@ -187,9 +184,9 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
       <Header
-        title="AI Attorney"
+        title={t('aiAttorney')}
         rightAction={
           <div className="flex items-center gap-2">
             <IconButton
@@ -238,10 +235,10 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
                 </motion.div>
 
                 <h2 className="text-lg font-display font-bold text-foreground mb-1">
-                  Welcome to AI Attorney
+                  {t('welcomeToAIAttorney')}
                 </h2>
                 <p className="text-muted-foreground text-sm">
-                  Powered by Latest AI Technology
+                  {t('poweredByAI')}
                 </p>
               </motion.div>
             </section>
@@ -253,7 +250,7 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-sm mb-4"
             >
-              Start by typing your message or upload a document
+              {t('startTyping')}
             </motion.p>
 
             {/* Quick Prompts Section */}
@@ -264,21 +261,22 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
                 transition={{ delay: 0.3 }}
                 className="bg-card rounded-2xl border border-border shadow-sm p-4"
               >
-                <p className="text-xs font-medium text-muted-foreground mb-3">Quick prompts</p>
+                <p className="text-xs font-medium text-muted-foreground mb-3">{t('quickPrompts')}</p>
                 <div className="space-y-2">
                   {quickPrompts.map((prompt, index) => (
                     <motion.button
-                      key={index}
+                      key={prompt.key}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.35 + 0.1 * index }}
-                      onClick={() => handleSend(prompt)}
+                      onClick={() => handleSend(prompt.text)}
                       className="w-full p-3 rounded-xl bg-secondary/50 hover:bg-secondary border border-border/50 hover:border-primary/30 transition-all text-left group"
+                      dir={isRTL ? 'rtl' : 'ltr'}
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                        <span className="text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                          {prompt}
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        <span className="text-sm text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                          {prompt.text}
                         </span>
                       </div>
                     </motion.button>
