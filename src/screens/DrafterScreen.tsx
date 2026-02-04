@@ -17,7 +17,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { drafterCategories, drafterTemplates, DrafterTemplate, TemplateField } from "@/data/drafterTemplates";
+import { drafterCategories, drafterTemplates as baseTemplates, DrafterTemplate, TemplateField } from "@/data/drafterTemplates";
+import { newPakistaniTemplates } from "@/data/newDrafterTemplates";
+
+// Merge all templates
+const drafterTemplates = [...baseTemplates, ...newPakistaniTemplates];
 import appIcon from "@/assets/app-icon.png";
 
 interface DrafterScreenProps {
