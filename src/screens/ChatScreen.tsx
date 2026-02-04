@@ -1,17 +1,24 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, History, Scale, FileText, X } from "lucide-react";
+import { Plus, History, Scale, FileText, Image, File, FileSpreadsheet } from "lucide-react";
 import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
+
+interface Attachment {
+  name: string;
+  size: number;
+  type: string;
+  preview?: string;
+}
 
 interface Message {
   id: string;
   text: string;
   isUser: boolean;
   timestamp: string;
-  attachments?: { name: string; size: number }[];
+  attachments?: Attachment[];
 }
 
 interface ChatScreenProps {
@@ -31,6 +38,28 @@ const quickPrompts = [
   "Draft a basic rental agreement",
 ];
 
+const getFileIcon = (type: string) => {
+  if (type.startsWith('image/')) return Image;
+  if (type.includes('pdf')) return FileText;
+  if (type.includes('spreadsheet') || type.includes('excel')) return FileSpreadsheet;
+  if (type.includes('document') || type.includes('word')) return FileText;
+  return File;
+};
+
+const getFileColor = (type: string) => {
+  if (type.startsWith('image/')) return 'bg-blue-500';
+  if (type.includes('pdf')) return 'bg-red-500';
+  if (type.includes('spreadsheet') || type.includes('excel')) return 'bg-green-500';
+  if (type.includes('document') || type.includes('word')) return 'bg-blue-600';
+  return 'bg-gray-500';
+};
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
@@ -42,13 +71,38 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
     }
   }, [messages, isTyping]);
 
-  const handleSend = async (text: string, attachments?: File[]) => {
+  const handleSend = async (text: string, files?: File[]) => {
+    // Process files to create attachment objects with previews
+    const attachments: Attachment[] = [];
+    
+    if (files) {
+      for (const file of files) {
+        const attachment: Attachment = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+        };
+        
+        // Generate preview for images
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          const preview = await new Promise<string>((resolve) => {
+            reader.onload = (e) => resolve(e.target?.result as string);
+            reader.readAsDataURL(file);
+          });
+          attachment.preview = preview;
+        }
+        
+        attachments.push(attachment);
+      }
+    }
+
     const userMessage: Message = {
       id: Date.now().toString(),
-      text: text || (attachments ? `Sent ${attachments.length} file(s)` : ""),
+      text: text || "",
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      attachments: attachments?.map(f => ({ name: f.name, size: f.size })),
+      attachments: attachments.length > 0 ? attachments : undefined,
     };
     
     setMessages((prev) => [...prev, userMessage]);
@@ -57,9 +111,13 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
     // Simulate AI response
     setTimeout(() => {
       setIsTyping(false);
+      const responseText = attachments.length > 0 
+        ? `I've received your ${attachments.length} file(s). ${sampleResponses[Math.floor(Math.random() * sampleResponses.length)]}`
+        : sampleResponses[Math.floor(Math.random() * sampleResponses.length)];
+      
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: sampleResponses[Math.floor(Math.random() * sampleResponses.length)],
+        text: responseText,
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
@@ -69,6 +127,63 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
 
   const startNewChat = () => {
     setMessages([]);
+  };
+
+  const renderAttachments = (attachments: Attachment[], isUser: boolean) => {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-2`}
+      >
+        <div className={`grid gap-2 max-w-[85%] ${attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+          {attachments.map((file, idx) => {
+            const FileIcon = getFileIcon(file.type);
+            const isImage = file.type.startsWith('image/');
+            
+            return (
+              <motion.div
+                key={idx}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: idx * 0.1 }}
+                className="overflow-hidden"
+              >
+                {isImage && file.preview ? (
+                  // Image attachment with preview
+                  <div className="relative rounded-xl overflow-hidden border border-border shadow-sm">
+                    <img 
+                      src={file.preview} 
+                      alt={file.name}
+                      className="w-full max-w-[200px] h-auto object-cover rounded-xl"
+                    />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-2">
+                      <p className="text-[10px] text-white truncate">{file.name}</p>
+                      <p className="text-[9px] text-white/70">{formatFileSize(file.size)}</p>
+                    </div>
+                  </div>
+                ) : (
+                  // File attachment
+                  <div className={`flex items-center gap-3 p-3 rounded-xl border shadow-sm min-w-[180px] ${
+                    isUser 
+                      ? 'bg-primary/10 border-primary/20' 
+                      : 'bg-secondary border-border'
+                  }`}>
+                    <div className={`w-10 h-10 rounded-lg ${getFileColor(file.type)} flex items-center justify-center flex-shrink-0`}>
+                      <FileIcon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">{file.name}</p>
+                      <p className="text-[10px] text-muted-foreground">{formatFileSize(file.size)}</p>
+                    </div>
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      </motion.div>
+    );
   };
 
   return (
@@ -138,7 +253,7 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-sm mb-4"
             >
-              Start by typing your message below
+              Start by typing your message or upload a document
             </motion.p>
 
             {/* Quick Prompts Section */}
@@ -178,31 +293,16 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
               <div key={message.id}>
                 {/* Show attachments if any */}
                 {message.attachments && message.attachments.length > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} mb-1`}
-                  >
-                    <div className="flex flex-wrap gap-2 max-w-[85%]">
-                      {message.attachments.map((file, idx) => (
-                        <div 
-                          key={idx}
-                          className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg border border-border"
-                        >
-                          <FileText className="w-4 h-4 text-primary" />
-                          <span className="text-xs font-medium text-foreground truncate max-w-[100px]">
-                            {file.name}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
+                  renderAttachments(message.attachments, message.isUser)
                 )}
-                <ChatBubble
-                  message={message.text}
-                  isUser={message.isUser}
-                  timestamp={message.timestamp}
-                />
+                {/* Only show chat bubble if there's text */}
+                {message.text && (
+                  <ChatBubble
+                    message={message.text}
+                    isUser={message.isUser}
+                    timestamp={message.timestamp}
+                  />
+                )}
               </div>
             ))}
             {isTyping && (

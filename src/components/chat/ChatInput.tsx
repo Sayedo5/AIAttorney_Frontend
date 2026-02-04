@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Mic, Globe, Paperclip, X, FileText } from "lucide-react";
+import { Send, Mic, Globe, Paperclip, X, FileText, Image, File, FileSpreadsheet } from "lucide-react";
 import { useVoiceRecording } from "@/hooks/useVoiceRecording";
 import { useToast } from "@/hooks/use-toast";
 
@@ -10,6 +10,30 @@ interface ChatInputProps {
   placeholder?: string;
 }
 
+const getFileIcon = (file: File) => {
+  const type = file.type;
+  if (type.startsWith('image/')) return Image;
+  if (type.includes('pdf')) return FileText;
+  if (type.includes('spreadsheet') || type.includes('excel')) return FileSpreadsheet;
+  if (type.includes('document') || type.includes('word')) return FileText;
+  return File;
+};
+
+const getFileColor = (file: File) => {
+  const type = file.type;
+  if (type.startsWith('image/')) return 'bg-blue-500';
+  if (type.includes('pdf')) return 'bg-red-500';
+  if (type.includes('spreadsheet') || type.includes('excel')) return 'bg-green-500';
+  if (type.includes('document') || type.includes('word')) return 'bg-blue-600';
+  return 'bg-gray-500';
+};
+
+const formatFileSize = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
+
 export function ChatInput({ 
   onSend, 
   disabled, 
@@ -18,6 +42,7 @@ export function ChatInput({
   const [message, setMessage] = useState("");
   const [language, setLanguage] = useState<"EN" | "UR">("EN");
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { toast } = useToast();
@@ -57,11 +82,34 @@ export function ChatInput({
     }
   }, [message]);
 
+  // Generate image previews
+  useEffect(() => {
+    const newPreviews: { [key: number]: string } = {};
+    
+    attachments.forEach((file, index) => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImagePreviews(prev => ({
+            ...prev,
+            [index]: e.target?.result as string
+          }));
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    return () => {
+      // Cleanup object URLs if needed
+    };
+  }, [attachments]);
+
   const handleSubmit = () => {
     if ((message.trim() || attachments.length > 0) && !disabled) {
       onSend(message.trim(), attachments.length > 0 ? attachments : undefined);
       setMessage("");
       setAttachments([]);
+      setImagePreviews({});
       clearTranscript();
     }
   };
@@ -85,7 +133,6 @@ export function ChatInput({
 
     const result = toggleRecording();
     if (result && !isRecording) {
-      // Recording stopped, we have the final transcript
       setMessage(prev => prev || result);
     }
   };
@@ -108,6 +155,11 @@ export function ChatInput({
 
   const removeAttachment = (index: number) => {
     setAttachments(prev => prev.filter((_, i) => i !== index));
+    setImagePreviews(prev => {
+      const updated = { ...prev };
+      delete updated[index];
+      return updated;
+    });
   };
 
   const toggleLanguage = (lang: "EN" | "UR") => {
@@ -130,28 +182,81 @@ export function ChatInput({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex gap-2 mb-2 overflow-x-auto pb-1"
+            className="mb-3"
           >
-            {attachments.map((file, index) => (
-              <motion.div
-                key={index}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-                className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg border border-border min-w-max"
-              >
-                <FileText className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-foreground truncate max-w-[120px]">
-                  {file.name}
+            <div className="bg-card rounded-xl border border-border p-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-medium text-muted-foreground">
+                  {attachments.length} file{attachments.length > 1 ? 's' : ''} attached
                 </span>
                 <button
-                  onClick={() => removeAttachment(index)}
-                  className="w-4 h-4 rounded-full bg-muted-foreground/20 hover:bg-destructive/20 flex items-center justify-center transition-colors"
+                  onClick={() => {
+                    setAttachments([]);
+                    setImagePreviews({});
+                  }}
+                  className="text-xs text-destructive hover:text-destructive/80 transition-colors"
                 >
-                  <X className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+                  Remove all
                 </button>
-              </motion.div>
-            ))}
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                {attachments.map((file, index) => {
+                  const FileIcon = getFileIcon(file);
+                  const isImage = file.type.startsWith('image/');
+                  const preview = imagePreviews[index];
+                  
+                  return (
+                    <motion.div
+                      key={index}
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      className="relative group"
+                    >
+                      {isImage && preview ? (
+                        // Image preview
+                        <div className="relative aspect-video rounded-lg overflow-hidden border border-border bg-secondary">
+                          <img 
+                            src={preview} 
+                            alt={file.name}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button
+                              onClick={() => removeAttachment(index)}
+                              className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
+                            >
+                              <X className="w-4 h-4 text-white" />
+                            </button>
+                          </div>
+                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2">
+                            <p className="text-[10px] text-white truncate">{file.name}</p>
+                          </div>
+                        </div>
+                      ) : (
+                        // File preview
+                        <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg border border-border/50 group-hover:border-primary/30 transition-colors">
+                          <div className={`w-10 h-10 rounded-lg ${getFileColor(file)} flex items-center justify-center flex-shrink-0`}>
+                            <FileIcon className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-medium text-foreground truncate">{file.name}</p>
+                            <p className="text-[10px] text-muted-foreground">{formatFileSize(file.size)}</p>
+                          </div>
+                          <button
+                            onClick={() => removeAttachment(index)}
+                            className="w-6 h-6 rounded-full bg-muted-foreground/10 hover:bg-destructive/20 flex items-center justify-center transition-colors flex-shrink-0"
+                          >
+                            <X className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+                          </button>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -191,15 +296,19 @@ export function ChatInput({
               type="file"
               onChange={handleFileChange}
               className="hidden"
-              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp"
               multiple
             />
             <button
               type="button"
               onClick={handleFileClick}
-              className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-secondary transition-colors"
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                attachments.length > 0 
+                  ? 'bg-primary/10 text-primary' 
+                  : 'hover:bg-secondary text-muted-foreground'
+              }`}
             >
-              <Paperclip className="w-4 h-4 text-muted-foreground" />
+              <Paperclip className="w-4 h-4" />
             </button>
 
             {/* Language Toggle */}
