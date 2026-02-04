@@ -208,13 +208,22 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
   const handleResultClick = (result: SearchResult) => {
     // Save search to history
     addSearch(query, result.type);
-    onNavigate(result.type === 'case' ? 'case-research' : result.type === 'library' ? 'library' : result.type === 'document' ? 'documents' : 'chat', query);
+    // Navigate to search results screen with the query
+    onNavigate('search-results', query);
     handleClose();
   };
 
   const handleQuickAction = (tab: string) => {
     onNavigate(tab);
     handleClose();
+  };
+
+  const handleSearchSubmit = () => {
+    if (query.trim()) {
+      addSearch(query, 'chat');
+      onNavigate('search-results', query);
+      handleClose();
+    }
   };
 
   return (
@@ -238,6 +247,11 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={handleFocus}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSearchSubmit();
+              }
+            }}
             placeholder={language === 'UR' ? 'کیسز، دستاویزات، چیٹس تلاش کریں...' : 'Search cases, documents, chats...'}
             className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground text-sm outline-none"
             dir={isRTL ? 'rtl' : 'ltr'}

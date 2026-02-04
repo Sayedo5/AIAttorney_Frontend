@@ -23,12 +23,13 @@ import { FeedbackScreen } from "@/screens/FeedbackScreen";
 import { BookmarkedCasesScreen } from "@/screens/BookmarkedCasesScreen";
 import { RemindersScreen } from "@/screens/RemindersScreen";
 import { TermsOfServiceScreen } from "@/screens/TermsOfServiceScreen";
+import { SearchResultsScreen } from "@/screens/SearchResultsScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password" | "terms";
-type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms";
+type AppScreen = "home" | "chat" | "library" | "documents" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms" | "search-results";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -52,6 +53,12 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState<AppScreen>("home");
   const [previousTab, setPreviousTab] = useState<AppScreen>("home");
   const [showHistory, setShowHistory] = useState(false);
+  
+  // Chat state
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSplashComplete = () => {
     setShowSplash(false);
@@ -72,7 +79,11 @@ const Index = () => {
     setActiveTab("home");
   };
 
-  const handleNavigate = (tab: string) => {
+  const handleNavigate = (tab: string, query?: string) => {
+    // Handle search results navigation
+    if (query) {
+      setSearchQuery(query);
+    }
     setActiveTab(tab as AppScreen);
     setShowHistory(false);
   };
@@ -83,6 +94,18 @@ const Index = () => {
 
   const handleBackFromHistory = () => {
     setShowHistory(false);
+  };
+
+  const handleSelectChat = (chatId: string) => {
+    setCurrentConversationId(chatId);
+    setShowHistory(false);
+    setActiveTab("chat");
+  };
+
+  const handleNewChat = () => {
+    setCurrentConversationId(null);
+    setShowHistory(false);
+    setActiveTab("chat");
   };
 
   const handleSettingsClick = () => {
@@ -158,12 +181,18 @@ const Index = () => {
   const handleBackFromTerms = () => {
     setActiveTab(previousTab === "settings" ? "settings" : previousTab);
   };
+  
+  const handleBackFromSearchResults = () => {
+    setActiveTab(previousTab);
+    setSearchQuery("");
+  };
 
   const handleLogout = () => {
     setShowHistory(false);
     setIsAuthenticated(false);
     setAuthScreen("login");
     setActiveTab("home");
+    setCurrentConversationId(null);
   };
 
   // Splash screen
@@ -261,10 +290,8 @@ const Index = () => {
           >
             <ChatHistoryScreen
               onBack={handleBackFromHistory}
-              onSelectChat={(id) => {
-                setShowHistory(false);
-                setActiveTab("chat");
-              }}
+              onSelectChat={handleSelectChat}
+              onNewChat={handleNewChat}
             />
           </motion.div>
         ) : (
@@ -303,7 +330,11 @@ const Index = () => {
               <ProfileEditScreen onBack={handleBackFromProfileEdit} />
             )}
             {activeTab === "chat" && (
-              <ChatScreen onHistoryClick={handleHistoryClick} />
+              <ChatScreen 
+                onHistoryClick={handleHistoryClick} 
+                conversationId={currentConversationId}
+                onConversationChange={setCurrentConversationId}
+              />
             )}
             {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} />}
             {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} />}
@@ -316,6 +347,13 @@ const Index = () => {
             {activeTab === "bookmarked-cases" && <BookmarkedCasesScreen onBack={handleBackFromBookmarkedCases} />}
             {activeTab === "reminders" && <RemindersScreen onBack={handleBackFromReminders} />}
             {activeTab === "terms" && <TermsOfServiceScreen onBack={handleBackFromTerms} />}
+            {activeTab === "search-results" && (
+              <SearchResultsScreen 
+                query={searchQuery}
+                onBack={handleBackFromSearchResults}
+                onNavigate={handleNavigate}
+              />
+            )}
           </motion.div>
         )}
       </AnimatePresence>

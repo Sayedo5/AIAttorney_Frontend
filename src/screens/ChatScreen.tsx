@@ -6,6 +6,7 @@ import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
 import { IconButton } from "@/components/ui/icon-button";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useChatHistory, ChatMessage } from "@/hooks/useChatHistory";
 
 interface Attachment {
   name: string;
@@ -14,16 +15,10 @@ interface Attachment {
   preview?: string;
 }
 
-interface Message {
-  id: string;
-  text: string;
-  isUser: boolean;
-  timestamp: string;
-  attachments?: Attachment[];
-}
-
 interface ChatScreenProps {
   onHistoryClick?: () => void;
+  conversationId?: string | null;
+  onConversationChange?: (id: string) => void;
 }
 
 const getFileIcon = (type: string) => {
@@ -48,11 +43,29 @@ const formatFileSize = (bytes: number) => {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
 
-export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
+export function ChatScreen({ onHistoryClick, conversationId, onConversationChange }: ChatScreenProps) {
   const { t, isRTL, getAIResponse, language } = useLanguage();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { 
+    createConversation, 
+    addMessage, 
+    getConversation 
+  } = useChatHistory();
+  
+  const [currentConversationId, setCurrentConversationId] = useState<string | null>(conversationId || null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Load existing conversation if ID provided
+  useEffect(() => {
+    if (conversationId) {
+      const conv = getConversation(conversationId);
+      if (conv) {
+        setMessages(conv.messages);
+        setCurrentConversationId(conversationId);
+      }
+    }
+  }, [conversationId, getConversation]);
 
   // Quick prompts with translations
   const quickPrompts = [
@@ -93,13 +106,23 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
       }
     }
 
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       id: Date.now().toString(),
       text: text || "",
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       attachments: attachments.length > 0 ? attachments : undefined,
     };
+    
+    // Create new conversation or add to existing
+    let convId = currentConversationId;
+    if (!convId) {
+      convId = createConversation(userMessage);
+      setCurrentConversationId(convId);
+      onConversationChange?.(convId);
+    } else {
+      addMessage(convId, userMessage);
+    }
     
     setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
@@ -114,18 +137,24 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
             : `I've received your ${attachments.length} file(s). ${baseResponse}`)
         : baseResponse;
       
-      const aiMessage: Message = {
+      const aiMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         text: responseText,
         isUser: false,
         timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
+      
+      if (convId) {
+        addMessage(convId, aiMessage);
+      }
+      
       setMessages((prev) => [...prev, aiMessage]);
     }, 1500 + Math.random() * 1000);
   };
 
   const startNewChat = () => {
     setMessages([]);
+    setCurrentConversationId(null);
   };
 
   const renderAttachments = (attachments: Attachment[], isUser: boolean) => {
