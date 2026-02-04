@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, History, Scale } from "lucide-react";
+import { Plus, History, Scale, FileText, X } from "lucide-react";
 import { ChatBubble } from "@/components/chat/ChatBubble";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { Header } from "@/components/navigation/Header";
@@ -11,6 +11,7 @@ interface Message {
   text: string;
   isUser: boolean;
   timestamp: string;
+  attachments?: { name: string; size: number }[];
 }
 
 interface ChatScreenProps {
@@ -41,12 +42,13 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
     }
   }, [messages, isTyping]);
 
-  const handleSend = async (text: string) => {
+  const handleSend = async (text: string, attachments?: File[]) => {
     const userMessage: Message = {
       id: Date.now().toString(),
-      text,
+      text: text || (attachments ? `Sent ${attachments.length} file(s)` : ""),
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      attachments: attachments?.map(f => ({ name: f.name, size: f.size })),
     };
     
     setMessages((prev) => [...prev, userMessage]);
@@ -94,81 +96,114 @@ export function ChatScreen({ onHistoryClick }: ChatScreenProps) {
       {/* Chat Area */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-3 py-3 space-y-3 custom-scrollbar pb-20"
+        className="flex-1 overflow-y-auto px-4 py-4 space-y-3 custom-scrollbar pb-20"
       >
         {messages.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-start pt-8 h-full text-center px-2"
+            className="flex flex-col items-center justify-start pt-6 h-full text-center"
           >
-            {/* Welcome Card - Compact for mobile */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-xs bg-primary rounded-2xl p-5 mb-5 shadow-lg"
-            >
-              {/* Avatar */}
+            {/* Welcome Card Section */}
+            <section className="w-full">
               <motion.div
-                animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-                className="w-16 h-16 mx-auto mb-3 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full bg-card rounded-2xl border border-border shadow-sm p-6 mb-4"
               >
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-300 to-amber-500 rounded-full flex items-center justify-center">
-                  <Scale className="w-7 h-7 text-primary" />
-                </div>
-              </motion.div>
+                {/* Avatar */}
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center"
+                >
+                  <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center">
+                    <Scale className="w-6 h-6 text-primary-foreground" />
+                  </div>
+                </motion.div>
 
-              <h2 className="text-lg font-display font-bold text-primary-foreground mb-1">
-                Welcome to AI Attorney
-              </h2>
-              <p className="text-primary-foreground/80 text-xs">
-                Powered by Latest AI Technology
-              </p>
-            </motion.div>
+                <h2 className="text-lg font-display font-bold text-foreground mb-1">
+                  Welcome to AI Attorney
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Powered by Latest AI Technology
+                </p>
+              </motion.div>
+            </section>
 
             {/* Instructions */}
-            <motion.div
+            <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-center mb-4"
+              className="text-muted-foreground text-sm mb-4"
             >
-              <p className="text-muted-foreground text-sm">
-                Start by typing your message below
-              </p>
-            </motion.div>
+              Start by typing your message below
+            </motion.p>
 
-            {/* Quick Prompts */}
-            <div className="w-full space-y-2">
-              {quickPrompts.map((prompt, index) => (
-                <motion.button
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + 0.1 * index }}
-                  onClick={() => handleSend(prompt)}
-                  className="w-full p-3 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card-elevated transition-all text-left group"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    <span className="text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                      {prompt}
-                    </span>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
+            {/* Quick Prompts Section */}
+            <section className="w-full">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="bg-card rounded-2xl border border-border shadow-sm p-4"
+              >
+                <p className="text-xs font-medium text-muted-foreground mb-3">Quick prompts</p>
+                <div className="space-y-2">
+                  {quickPrompts.map((prompt, index) => (
+                    <motion.button
+                      key={index}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 + 0.1 * index }}
+                      onClick={() => handleSend(prompt)}
+                      className="w-full p-3 rounded-xl bg-secondary/50 hover:bg-secondary border border-border/50 hover:border-primary/30 transition-all text-left group"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <span className="text-sm text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                          {prompt}
+                        </span>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            </section>
           </motion.div>
         ) : (
           <AnimatePresence mode="popLayout">
             {messages.map((message) => (
-              <ChatBubble
-                key={message.id}
-                message={message.text}
-                isUser={message.isUser}
-                timestamp={message.timestamp}
-              />
+              <div key={message.id}>
+                {/* Show attachments if any */}
+                {message.attachments && message.attachments.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} mb-1`}
+                  >
+                    <div className="flex flex-wrap gap-2 max-w-[85%]">
+                      {message.attachments.map((file, idx) => (
+                        <div 
+                          key={idx}
+                          className="flex items-center gap-2 px-3 py-1.5 bg-secondary rounded-lg border border-border"
+                        >
+                          <FileText className="w-4 h-4 text-primary" />
+                          <span className="text-xs font-medium text-foreground truncate max-w-[100px]">
+                            {file.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+                <ChatBubble
+                  message={message.text}
+                  isUser={message.isUser}
+                  timestamp={message.timestamp}
+                />
+              </div>
             ))}
             {isTyping && (
               <ChatBubble
