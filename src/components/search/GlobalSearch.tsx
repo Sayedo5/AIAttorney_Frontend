@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSearchHistory, SearchHistoryItem } from "@/hooks/useSearchHistory";
+import { fuzzySearch, highlightFuzzyMatch } from "@/lib/fuzzySearch";
 
 interface SearchResult {
   id: string;
@@ -24,6 +25,7 @@ interface SearchResult {
   title: string;
   subtitle: string;
   icon: typeof MessageCircle;
+  score?: number;
 }
 
 interface GlobalSearchProps {
@@ -32,22 +34,21 @@ interface GlobalSearchProps {
   onExpandChange?: (expanded: boolean) => void;
 }
 
-// Highlight matching text in search results
+// Fuzzy-aware highlight component
 function HighlightedText({ text, query }: { text: string; query: string }) {
   if (!query.trim()) return <>{text}</>;
   
-  const regex = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-  const parts = text.split(regex);
+  const parts = highlightFuzzyMatch(text, query);
   
   return (
     <>
       {parts.map((part, index) => 
-        regex.test(part) ? (
+        part.isMatch ? (
           <mark key={index} className="bg-primary/30 text-foreground rounded-sm px-0.5">
-            {part}
+            {part.text}
           </mark>
         ) : (
-          <span key={index}>{part}</span>
+          <span key={index}>{part.text}</span>
         )
       )}
     </>
@@ -131,29 +132,45 @@ export function GlobalSearch({ onNavigate, isExpanded = false, onExpandChange }:
     ? ['سپریم کورٹ کے فیصلے', 'فوجداری قانون', 'دیوانی دعویٰ', 'خاندانی قانون']
     : ['Supreme Court rulings', 'Criminal law', 'Civil litigation', 'Family law'];
 
-  // Mock search results based on query
-  const getSearchResults = (searchQuery: string): SearchResult[] => {
-    if (!searchQuery.trim()) return [];
+  // Expanded mock data for fuzzy search demonstration
+  const allSearchableItems: SearchResult[] = useMemo(() => language === 'UR' ? [
+    { id: '1', type: 'case', title: 'احمد بمقابلہ ریاست', subtitle: 'فوجداری مقدمہ - 2024', icon: Scale },
+    { id: '2', type: 'document', title: 'کرائے کا معاہدہ', subtitle: 'دستاویز ٹیمپلیٹ', icon: FileText },
+    { id: '3', type: 'chat', title: 'جائیداد کے بارے میں سوال', subtitle: '2 گھنٹے پہلے', icon: MessageCircle },
+    { id: '4', type: 'library', title: 'پاکستانی دستور', subtitle: 'قانونی حوالہ', icon: BookOpen },
+    { id: '5', type: 'case', title: 'خان بمقابلہ حکومت', subtitle: 'دیوانی مقدمہ - 2023', icon: Scale },
+    { id: '6', type: 'document', title: 'وکیل نامہ', subtitle: 'قانونی دستاویز', icon: FileText },
+    { id: '7', type: 'library', title: 'تعزیرات پاکستان', subtitle: 'فوجداری قانون', icon: BookOpen },
+    { id: '8', type: 'chat', title: 'طلاق کے قوانین', subtitle: 'کل', icon: MessageCircle },
+  ] : [
+    { id: '1', type: 'case', title: 'Ahmad vs State', subtitle: 'Criminal Case - 2024', icon: Scale },
+    { id: '2', type: 'document', title: 'Rental Agreement', subtitle: 'Document Template', icon: FileText },
+    { id: '3', type: 'chat', title: 'Property Law Query', subtitle: '2 hours ago', icon: MessageCircle },
+    { id: '4', type: 'library', title: 'Pakistan Constitution', subtitle: 'Legal Reference', icon: BookOpen },
+    { id: '5', type: 'case', title: 'Khan vs Government', subtitle: 'Civil Case - 2023', icon: Scale },
+    { id: '6', type: 'document', title: 'Power of Attorney', subtitle: 'Legal Document', icon: FileText },
+    { id: '7', type: 'library', title: 'Pakistan Penal Code', subtitle: 'Criminal Law', icon: BookOpen },
+    { id: '8', type: 'chat', title: 'Divorce Laws Discussion', subtitle: 'Yesterday', icon: MessageCircle },
+    { id: '9', type: 'case', title: 'Property Dispute Resolution', subtitle: 'Supreme Court - 2024', icon: Scale },
+    { id: '10', type: 'document', title: 'Employment Contract', subtitle: 'HR Template', icon: FileText },
+    { id: '11', type: 'library', title: 'Contract Act 1872', subtitle: 'Civil Law', icon: BookOpen },
+    { id: '12', type: 'chat', title: 'Inheritance Rights Query', subtitle: '3 days ago', icon: MessageCircle },
+  ], [language]);
+
+  // Use fuzzy search for results
+  const searchResults = useMemo(() => {
+    if (!query.trim()) return [];
     
-    const allResults: SearchResult[] = language === 'UR' ? [
-      { id: '1', type: 'case', title: 'احمد بمقابلہ ریاست', subtitle: 'فوجداری مقدمہ - 2024', icon: Scale },
-      { id: '2', type: 'document', title: 'کرائے کا معاہدہ', subtitle: 'دستاویز ٹیمپلیٹ', icon: FileText },
-      { id: '3', type: 'chat', title: 'جائیداد کے بارے میں سوال', subtitle: '2 گھنٹے پہلے', icon: MessageCircle },
-      { id: '4', type: 'library', title: 'پاکستانی دستور', subtitle: 'قانونی حوالہ', icon: BookOpen },
-    ] : [
-      { id: '1', type: 'case', title: 'Ahmad vs State', subtitle: 'Criminal Case - 2024', icon: Scale },
-      { id: '2', type: 'document', title: 'Rental Agreement', subtitle: 'Document Template', icon: FileText },
-      { id: '3', type: 'chat', title: 'Property Law Query', subtitle: '2 hours ago', icon: MessageCircle },
-      { id: '4', type: 'library', title: 'Pakistan Constitution', subtitle: 'Legal Reference', icon: BookOpen },
-    ];
-
-    return allResults.filter(r => 
-      r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      r.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  };
-
-  const searchResults = getSearchResults(query);
+    const fuzzyResults = fuzzySearch(allSearchableItems, query, {
+      threshold: 0.4,
+      keys: ['title', 'subtitle']
+    });
+    
+    return fuzzyResults.map(result => ({
+      ...result.item,
+      score: result.score
+    }));
+  }, [query, allSearchableItems]);
 
   useEffect(() => {
     if (isExpanded && inputRef.current) {
