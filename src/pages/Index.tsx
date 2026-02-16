@@ -25,12 +25,16 @@ import { BookmarkedCasesScreen } from "@/screens/BookmarkedCasesScreen";
 import { RemindersScreen } from "@/screens/RemindersScreen";
 import { TermsOfServiceScreen } from "@/screens/TermsOfServiceScreen";
 import { SearchResultsScreen } from "@/screens/SearchResultsScreen";
+import ActsScreen from "@/screens/ActsScreen";
+import CodesScreen from "@/screens/CodesScreen";
+import EditorScreen from "@/screens/EditorScreen";
+import PaymentScreen from "@/screens/PaymentScreen";
 
 // Navigation
 import { BottomNav } from "@/components/navigation/BottomNav";
 
 type AuthScreen = "login" | "signup" | "forgot-password" | "terms";
-type AppScreen = "home" | "chat" | "library" | "documents" | "drafter" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms" | "search-results";
+type AppScreen = "home" | "chat" | "library" | "documents" | "drafter" | "cases" | "history" | "settings" | "profile-edit" | "pricing" | "about" | "contact" | "case-research" | "feedback" | "bookmarked-cases" | "reminders" | "terms" | "search-results" | "acts" | "codes" | "editor" | "payment";
 
 const ONBOARDING_KEY = "ai-attorney-onboarding-complete";
 const SPLASH_SHOWN_KEY = "ai-attorney-splash-shown";
@@ -349,6 +353,10 @@ const Index = () => {
             {activeTab === "bookmarked-cases" && <BookmarkedCasesScreen onBack={handleBackFromBookmarkedCases} />}
             {activeTab === "reminders" && <RemindersScreen onBack={handleBackFromReminders} />}
             {activeTab === "terms" && <TermsOfServiceScreen onBack={handleBackFromTerms} />}
+            {activeTab === "acts" && <ActsScreen onBack={() => setActiveTab("library")} />}
+            {activeTab === "codes" && <CodesScreen onBack={() => setActiveTab("library")} />}
+            {activeTab === "editor" && <EditorScreen onBack={() => setActiveTab("documents")} />}
+            {activeTab === "payment" && <PaymentScreen onBack={() => setActiveTab(previousTab)} />}
             {activeTab === "search-results" && (
               <SearchResultsScreen 
                 query={searchQuery}
