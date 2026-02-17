@@ -11,13 +11,15 @@ interface BottomNavProps {
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   const { t, isRTL } = useLanguage();
 
+  import { Home, MessageCircle, BookOpen, FileText, Calendar, Scale } from "lucide-react-native";
+
   const navItems = [
     { id: "home", icon: Home, label: t("home") },
     { id: "chat", icon: MessageCircle, label: t("chat") },
     { id: "library", icon: BookOpen, label: t("library") },
     { id: "documents", icon: FileText, label: t("documentsNav") },
     { id: "cases", icon: Calendar, label: t("cases") },
-    { id: "cases", icon: Calendar, label: t("cases") },
+    { id: "causeList", icon: Scale, label: t("causeList") },
   ];
 
   return (
