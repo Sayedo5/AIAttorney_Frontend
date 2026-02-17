@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Home, MessageCircle, BookOpen, FileText, Calendar, Scale } from "lucide-react";
+import { Home, MessageCircle, BookOpen, PenTool, FileText, Calendar, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -15,6 +15,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     { id: "home", icon: Home, label: t("home") },
     { id: "chat", icon: MessageCircle, label: t("chat") },
     { id: "library", icon: BookOpen, label: t("library") },
+    { id: "drafter", icon: PenTool, label: t("drafter") },
     { id: "documents", icon: FileText, label: t("documentsNav") },
     { id: "cases", icon: Calendar, label: t("cases") },
     { id: "causeList", icon: Scale, label: t("causeList") },
