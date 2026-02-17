@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Home, MessageCircle, BookOpen, FileText, Calendar } from "lucide-react";
+import { Home, MessageCircle, BookOpen, FileText, Calendar, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 
