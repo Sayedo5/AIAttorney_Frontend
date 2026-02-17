@@ -11,8 +11,6 @@ interface BottomNavProps {
 export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   const { t, isRTL } = useLanguage();
 
-  import { Home, MessageCircle, BookOpen, FileText, Calendar, Scale } from "lucide-react-native";
-
   const navItems = [
     { id: "home", icon: Home, label: t("home") },
     { id: "chat", icon: MessageCircle, label: t("chat") },
@@ -21,7 +19,6 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
     { id: "cases", icon: Calendar, label: t("cases") },
     { id: "causeList", icon: Scale, label: t("causeList") },
   ];
-
   return (
     <nav className="bottom-nav" dir={isRTL ? "rtl" : "ltr"}>
       <div className="flex items-center justify-around">
