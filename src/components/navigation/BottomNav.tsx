@@ -12,28 +12,26 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
   const { t, isRTL } = useLanguage();
 
   const navItems = [
-    { id: "home", icon: Home, label: t('home') },
-    { id: "chat", icon: MessageCircle, label: t('chat') },
-    { id: "library", icon: BookOpen, label: t('library') },
-    { id: "documents", icon: FileText, label: t('documentsNav') },
-    { id: "cases", icon: Calendar, label: t('cases') },
+    { id: "home", icon: Home, label: t("home") },
+    { id: "chat", icon: MessageCircle, label: t("chat") },
+    { id: "library", icon: BookOpen, label: t("library") },
+    { id: "documents", icon: FileText, label: t("documentsNav") },
+    { id: "cases", icon: Calendar, label: t("cases") },
+    { id: "cases", icon: Calendar, label: t("cases") },
   ];
 
   return (
-    <nav className="bottom-nav" dir={isRTL ? 'rtl' : 'ltr'}>
+    <nav className="bottom-nav" dir={isRTL ? "rtl" : "ltr"}>
       <div className="flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
-          
+
           return (
             <motion.button
               key={item.id}
               onClick={() => onTabChange(item.id)}
-              className={cn(
-                "nav-item relative",
-                isActive && "active"
-              )}
+              className={cn("nav-item relative", isActive && "active")}
               whileTap={{ scale: 0.9 }}
             >
               <motion.div
@@ -46,7 +44,7 @@ export function BottomNav({ activeTab, onTabChange }: BottomNavProps) {
                 <Icon className="w-5 h-5" />
               </motion.div>
               <span className="text-[10px] font-medium">{item.label}</span>
-              
+
               {isActive && (
                 <motion.div
                   layoutId="nav-indicator"
