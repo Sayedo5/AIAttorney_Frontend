@@ -20,6 +20,8 @@ interface DocumentsScreenProps {
   onSupport?: () => void;
   onNotificationsClick?: () => void;
   onDrafterClick?: () => void;
+  onEditorClick?: () => void;
+  onPaymentClick?: () => void;
 }
 
 const documentTypes = [
@@ -70,7 +72,7 @@ const quickActions = [
   { icon: Upload, label: "Upload", description: "Import file", color: "bg-primary" },
 ];
 
-export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsClick, onDrafterClick }: DocumentsScreenProps) {
+export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsClick, onDrafterClick, onEditorClick, onPaymentClick }: DocumentsScreenProps) {
   const [activeType, setActiveType] = useState("all");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -269,6 +271,7 @@ export function DocumentsScreen({ onSettingsClick, onSupport, onNotificationsCli
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.05 * index }}
                   className="flex items-center gap-3 p-3 rounded-xl bg-secondary/30 hover:bg-secondary/50 border border-border/50 hover:border-primary/20 transition-all cursor-pointer"
+                  onClick={() => onEditorClick?.()}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
                     doc.status === "completed" 
