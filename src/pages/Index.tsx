@@ -329,6 +329,7 @@ const Index = () => {
                 onAbout={handleAboutClick}
                 onContact={handleContactClick}
                 onTerms={handleTermsClick}
+                onPayment={() => handleNavigate("payment")}
               />
             )}
             {activeTab === "profile-edit" && (
