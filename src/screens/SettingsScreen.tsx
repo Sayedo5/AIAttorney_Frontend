@@ -54,9 +54,10 @@ interface SettingsScreenProps {
   onAbout: () => void;
   onContact: () => void;
   onTerms: () => void;
+  onPayment?: () => void;
 }
 
-export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onAbout, onContact, onTerms }: SettingsScreenProps) => {
+export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onAbout, onContact, onTerms, onPayment }: SettingsScreenProps) => {
   const { theme, setTheme } = useTheme();
   const { impact, notification } = useHaptics();
   const { register, isRegistered, permissionStatus } = usePushNotifications();
@@ -448,6 +449,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
         >
           <h3 className="text-sm font-medium text-muted-foreground mb-3 px-1">More</h3>
           <Card className="divide-y divide-border/50">
+            <SettingItem icon={CreditCard} label="Payment & Billing" onClick={onPayment} />
             <SettingItem icon={CreditCard} label="Pricing Plans" onClick={onPricing} />
             <SettingItem icon={Info} label="About Us" onClick={onAbout} />
             <SettingItem icon={MessageCircle} label="Contact & Support" onClick={onContact} />
