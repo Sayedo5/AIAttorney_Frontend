@@ -18,6 +18,8 @@ interface LibraryScreenProps {
   onBookmarkedCasesClick?: () => void;
   onSupport?: () => void;
   onNotificationsClick?: () => void;
+  onActsClick?: () => void;
+  onCodesClick?: () => void;
 }
 
 interface Category {
@@ -96,7 +98,7 @@ const sampleDocuments = [
   },
 ];
 
-export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick, onSupport, onNotificationsClick }: LibraryScreenProps) {
+export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClick, onSupport, onNotificationsClick, onActsClick, onCodesClick }: LibraryScreenProps) {
   const [expandedCategories, setExpandedCategories] = useState<string[]>(["cases", "acts", "codes"]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<CategoryItem | null>(null);
@@ -110,9 +112,18 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
     );
   };
 
-  const handleItemClick = (item: CategoryItem) => {
+  const handleItemClick = (item: CategoryItem, categoryId?: string) => {
     if (item.id === "bm1" && onBookmarkedCasesClick) {
       onBookmarkedCasesClick();
+      return;
+    }
+    // Navigate to Acts or Codes screens based on parent category
+    if (categoryId === "acts" && onActsClick) {
+      onActsClick();
+      return;
+    }
+    if (categoryId === "codes" && onCodesClick) {
+      onCodesClick();
       return;
     }
     setSelectedItem(item);
@@ -310,7 +321,7 @@ export function LibraryScreen({ onSettingsClick, onLogout, onBookmarkedCasesClic
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: 0.03 * itemIndex }}
-                          onClick={() => handleItemClick(item)}
+                          onClick={() => handleItemClick(item, category.id)}
                           className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all text-left ${
                             selectedCategory === item.id
                               ? "bg-primary text-primary-foreground border-primary shadow-sm"

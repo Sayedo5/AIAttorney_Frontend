@@ -341,8 +341,8 @@ const Index = () => {
                 onConversationChange={setCurrentConversationId}
               />
             )}
-            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} />}
-            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} onDrafterClick={() => handleNavigate("drafter")} />}
+            {activeTab === "library" && <LibraryScreen onSettingsClick={handleSettingsClick} onLogout={handleLogout} onBookmarkedCasesClick={handleBookmarkedCasesClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} onActsClick={() => handleNavigate("acts")} onCodesClick={() => handleNavigate("codes")} />}
+            {activeTab === "documents" && <DocumentsScreen onSettingsClick={handleSettingsClick} onSupport={handleContactClick} onNotificationsClick={handleRemindersClick} onDrafterClick={() => handleNavigate("drafter")} onEditorClick={() => handleNavigate("editor")} onPaymentClick={() => handleNavigate("payment")} />}
             {activeTab === "drafter" && <DrafterScreen onBack={() => handleNavigate("documents")} onSettingsClick={handleSettingsClick} onNotificationsClick={handleRemindersClick} />}
             {activeTab === "cases" && <CasesScreen onSettingsClick={handleSettingsClick} onRemindersClick={handleRemindersClick} onSupport={handleContactClick} />}
             {activeTab === "pricing" && <PricingScreen onBack={handleBackFromPricing} />}
