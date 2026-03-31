@@ -5,7 +5,8 @@ import {
   Scale, 
   BookOpen, 
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Crown
 } from "lucide-react";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { Header } from "@/components/navigation/Header";
@@ -78,6 +79,26 @@ export function HomeScreen({ onNavigate, userName = "Advocate", onSettingsClick,
             {userName}
           </h1>
         </motion.div>
+      </section>
+
+      {/* Upgrade Banner */}
+      <section className="px-4 pb-4">
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+          onClick={() => onNavigate("payment")}
+          className="w-full flex items-center gap-3 p-3.5 rounded-2xl bg-gradient-to-r from-primary to-primary/80 text-primary-foreground shadow-md hover:shadow-lg transition-shadow"
+        >
+          <div className="w-9 h-9 rounded-xl bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
+            <Crown className="w-5 h-5" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="font-semibold text-sm">{language === 'UR' ? 'پریمیم میں اپ گریڈ کریں' : 'Upgrade to Premium'}</p>
+            <p className="text-xs opacity-80">{language === 'UR' ? 'تمام خصوصیات کھولیں' : 'Unlock all features & unlimited access'}</p>
+          </div>
+          <ChevronRight className={`w-5 h-5 opacity-80 ${isRTL ? 'rotate-180' : ''}`} />
+        </motion.button>
       </section>
 
       {/* Global Search Section */}
