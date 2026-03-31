@@ -5,7 +5,8 @@ import {
   Scale, 
   BookOpen, 
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Crown
 } from "lucide-react";
 import { FeatureCard } from "@/components/cards/FeatureCard";
 import { Header } from "@/components/navigation/Header";
