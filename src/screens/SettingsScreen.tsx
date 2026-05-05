@@ -45,6 +45,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useReminderSettings } from "@/hooks/useReminderSettings";
 import { useToast } from "@/hooks/use-toast";
+import { useReduceUpgradeMotion } from "@/hooks/useReduceMotion";
 
 interface SettingsScreenProps {
   onBack: () => void;
