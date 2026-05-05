@@ -144,15 +144,26 @@ export function ProfileDropdown({
                         className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
                           item.action === "logout"
                             ? "text-destructive hover:bg-destructive/10"
-                            : "text-foreground hover:bg-accent/50"
+                            : item.action === "upgrade"
+                              ? "bg-gradient-to-r from-primary/15 to-primary/5 hover:from-primary/25 hover:to-primary/10 text-foreground ring-1 ring-primary/30"
+                              : "text-foreground hover:bg-accent/50"
                         }`}
                       >
-                        <span className="font-medium text-sm">{item.label}</span>
+                        <span className="font-medium text-sm flex items-center gap-2">
+                          {item.label}
+                          {item.action === "upgrade" && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                              Pro
+                            </span>
+                          )}
+                        </span>
                         <item.icon
                           className={`w-5 h-5 transition-colors ${
                             item.action === "logout"
                               ? "text-destructive"
-                              : "text-muted-foreground group-hover:text-primary"
+                              : item.action === "upgrade"
+                                ? "text-primary"
+                                : "text-muted-foreground group-hover:text-primary"
                           }`}
                         />
                       </motion.button>
