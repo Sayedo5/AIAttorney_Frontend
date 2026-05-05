@@ -152,7 +152,7 @@ export function ProfileDropdown({
                         <span className="font-medium text-sm flex items-center gap-2">
                           {item.label}
                           {item.action === "upgrade" && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground animate-pulse-soft">
                               Pro
                             </span>
                           )}
@@ -162,7 +162,7 @@ export function ProfileDropdown({
                             item.action === "logout"
                               ? "text-destructive"
                               : item.action === "upgrade"
-                                ? "text-primary"
+                                ? "text-primary group-hover:scale-110 transition-transform"
                                 : "text-muted-foreground group-hover:text-primary"
                           }`}
                         />
