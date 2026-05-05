@@ -141,18 +141,18 @@ export function ProfileDropdown({
                           e.stopPropagation();
                           handleAction(item.action);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group ${
+                        className={`relative w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 group overflow-hidden ${
                           item.action === "logout"
                             ? "text-destructive hover:bg-destructive/10"
                             : item.action === "upgrade"
-                              ? "bg-gradient-to-r from-primary/15 to-primary/5 hover:from-primary/25 hover:to-primary/10 text-foreground ring-1 ring-primary/30"
+                              ? "bg-gradient-to-r from-primary/15 via-primary/25 to-primary/15 bg-[length:200%_100%] animate-shimmer hover:from-primary/25 hover:to-primary/25 text-foreground ring-1 ring-primary/30"
                               : "text-foreground hover:bg-accent/50"
                         }`}
                       >
                         <span className="font-medium text-sm flex items-center gap-2">
                           {item.label}
                           {item.action === "upgrade" && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground animate-pulse-soft">
                               Pro
                             </span>
                           )}
@@ -162,7 +162,7 @@ export function ProfileDropdown({
                             item.action === "logout"
                               ? "text-destructive"
                               : item.action === "upgrade"
-                                ? "text-primary"
+                                ? "text-primary group-hover:scale-110 transition-transform"
                                 : "text-muted-foreground group-hover:text-primary"
                           }`}
                         />
