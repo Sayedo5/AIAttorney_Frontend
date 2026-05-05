@@ -44,6 +44,7 @@ export function ProfileDropdown({
   onLogout,
 }: ProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { reduceMotion } = useReduceUpgradeMotion();
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
 
