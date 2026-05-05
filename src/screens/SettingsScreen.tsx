@@ -45,6 +45,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { useReminderSettings } from "@/hooks/useReminderSettings";
 import { useToast } from "@/hooks/use-toast";
+import { useReduceUpgradeMotion } from "@/hooks/useReduceMotion";
 
 interface SettingsScreenProps {
   onBack: () => void;
@@ -63,6 +64,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
   const { register, isRegistered, permissionStatus } = usePushNotifications();
   const { isRemindersEnabled, setRemindersEnabled } = useReminderSettings();
   const { toast } = useToast();
+  const { reduceMotion, setReduceMotion } = useReduceUpgradeMotion();
   const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
     push: true,
@@ -377,6 +379,17 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
                 </motion.button>
               ))}
             </div>
+          </Card>
+          <Card className="mt-3">
+            <SettingItem
+              icon={Zap}
+              label="Reduce Upgrade Animation"
+              toggle={reduceMotion}
+              onToggle={(checked) => {
+                impact('light').catch(() => {});
+                setReduceMotion(checked);
+              }}
+            />
           </Card>
         </motion.div>
 
