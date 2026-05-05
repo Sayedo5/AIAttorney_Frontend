@@ -10,6 +10,7 @@ import {
   Clock
 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/user-avatar";
+import { useReduceUpgradeMotion } from "@/hooks/useReduceMotion";
 
 interface ProfileDropdownProps {
   firstName?: string;
