@@ -147,14 +147,14 @@ export function ProfileDropdown({
                           item.action === "logout"
                             ? "text-destructive hover:bg-destructive/10"
                             : item.action === "upgrade"
-                              ? "bg-gradient-to-r from-primary/15 via-primary/25 to-primary/15 bg-[length:200%_100%] animate-shimmer hover:from-primary/25 hover:to-primary/25 text-foreground ring-1 ring-primary/30"
+                              ? `bg-gradient-to-r from-primary/15 via-primary/25 to-primary/15 bg-[length:200%_100%] hover:from-primary/25 hover:to-primary/25 text-foreground ring-1 ring-primary/30 ${reduceMotion ? "" : "animate-shimmer"}`
                               : "text-foreground hover:bg-accent/50"
                         }`}
                       >
                         <span className="font-medium text-sm flex items-center gap-2">
                           {item.label}
                           {item.action === "upgrade" && (
-                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground animate-pulse-soft">
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-primary text-primary-foreground ${reduceMotion ? "" : "animate-pulse-soft"}`}>
                               Pro
                             </span>
                           )}
