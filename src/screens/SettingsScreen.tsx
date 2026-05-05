@@ -380,6 +380,17 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
               ))}
             </div>
           </Card>
+          <Card className="mt-3">
+            <SettingItem
+              icon={Zap}
+              label="Reduce Upgrade Animation"
+              toggle={reduceMotion}
+              onToggle={(checked) => {
+                impact('light').catch(() => {});
+                setReduceMotion(checked);
+              }}
+            />
+          </Card>
         </motion.div>
 
         {/* Notifications */}
