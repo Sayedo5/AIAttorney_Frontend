@@ -64,6 +64,7 @@ export const SettingsScreen = ({ onBack, onLogout, onEditProfile, onPricing, onA
   const { register, isRegistered, permissionStatus } = usePushNotifications();
   const { isRemindersEnabled, setRemindersEnabled } = useReminderSettings();
   const { toast } = useToast();
+  const { reduceMotion, setReduceMotion } = useReduceUpgradeMotion();
   const isDarkMode = theme === "dark";
   const [notifications, setNotifications] = useState({
     push: true,
